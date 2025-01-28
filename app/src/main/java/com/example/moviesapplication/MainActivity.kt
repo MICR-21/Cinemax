@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.moviesapplication.screens.MovieApp
 import com.example.moviesapplication.screens.OnboardingOne
 import com.example.moviesapplication.screens.OnboardingThree
 import com.example.moviesapplication.screens.OnboardingTwo
@@ -19,10 +20,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MainScreen()
+            MovieApp()
             }
         }
     }
+
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
