@@ -10,6 +10,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults
@@ -17,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.moviesapplication.ViewModel.MovieViewModel
@@ -204,6 +209,54 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
         }
     }
 }
+
+
+//@Composable
+//fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modifier) {
+//    var selectedItem by remember { mutableStateOf(0) }
+//
+//    NavigationBar(
+//        modifier = modifier,
+//        containerColor = Color(0xFF7B1FA2),
+//        contentColor = Color.White
+//    ) {
+//        val items = listOf(
+//            BottomNavItem("Home", Icons.Filled.Home),
+//            BottomNavItem("Search", Icons.Filled.Search),
+//            BottomNavItem("Downloads", Icons.Default.PlayArrow),
+//            BottomNavItem("Profile", Icons.Filled.Person)
+//        )
+//
+//        items.forEachIndexed { index, item ->
+//            NavigationBarItem(
+//                icon = { Icon(item.icon, contentDescription = item.label) },
+//                label = { Text(text = item.label) },
+//                selected = selectedItem == index,
+//                onClick = { selectedItem = index },
+//                colors = NavigationBarItemDefaults.colors(
+//                    selectedIconColor = Color.White,
+//                    unselectedIconColor = Color.LightGray,
+//                    indicatorColor = Color(0xFF673AB7)
+//                )
+//            )
+//        }
+//    }
+//}
+
+data class BottomNavItem(val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector)
+
+//@Composable
+//fun MainScreenWithBottomNav() {
+//    val navController = rememberNavController()
+//
+//    Scaffold(
+//        bottomBar = { BottomNavigationBar(navController) }
+//    ) { paddingValues ->
+//        Box(modifier = Modifier.padding(paddingValues)) {
+//            // Add your screen content here
+//        }
+//    }
+//}
 
 
 @Preview
