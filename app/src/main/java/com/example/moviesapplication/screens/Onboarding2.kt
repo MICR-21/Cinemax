@@ -1,4 +1,5 @@
 package com.example.moviesapplication.screens
+import NavigationManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -32,7 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.moviesapplication.R
 
 @Composable
-fun OnboardingTwo(navController: NavController) {
+fun OnboardingTwo(navigationManager: NavigationManager) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -105,12 +107,12 @@ fun OnboardingTwo(navController: NavController) {
                         .size(56.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(Color(0xFF1E88E5))
-                        .clickable { navController.navigate("Onboarding3") },
+                        .clickable { navigationManager.navigateToOnboarding3()},//screen 3
                     contentAlignment = Alignment.Center
 
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowForward, // Replace with custom arrow icon if needed
+                        imageVector = Icons.Default.ArrowForward,
                         contentDescription = "Next Button",
                         tint = Color.White,
                         modifier = Modifier
@@ -125,6 +127,6 @@ fun OnboardingTwo(navController: NavController) {
 @Preview
 @Composable
 fun OnboardingTwoPreview() {
-    OnboardingTwo(navController = rememberNavController())
+    OnboardingTwo(navigationManager = NavigationManager(rememberNavController()))
 }
 

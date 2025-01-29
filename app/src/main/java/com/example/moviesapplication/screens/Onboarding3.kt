@@ -1,6 +1,7 @@
 package com.example.moviesapplication.screens
 
 
+import NavigationManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,7 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.moviesapplication.R
 
 @Composable
-fun OnboardingThree(navController: NavController) {
+fun OnboardingThree(navigationManager: NavigationManager) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -175,7 +176,13 @@ fun OnboardingThree(navController: NavController) {
                         .size(56.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(Color(0xFF1E88E5))
-                        .clickable { navController.navigate("Onboarding1") },
+                        .clickable {
+                            try{
+                                navigationManager.navigateToHomeScreen()
+                            }catch (e: Exception){
+                                e.printStackTrace()
+                            }
+                        }, //homescreen navigation
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -194,5 +201,5 @@ fun OnboardingThree(navController: NavController) {
 @Preview
 @Composable
 fun OnboardingThreePreview() {
-    OnboardingThree(navController = rememberNavController())
+    OnboardingThree(navigationManager = NavigationManager(rememberNavController()) )
 }

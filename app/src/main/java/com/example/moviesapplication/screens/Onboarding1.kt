@@ -1,5 +1,6 @@
 package com.example.moviesapplication.screens
 
+import NavigationManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,7 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.moviesapplication.R
 
 @Composable
-fun OnboardingOne(navController: NavController) {
+fun OnboardingOne(navigationManager: NavigationManager ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,7 +100,7 @@ fun OnboardingOne(navController: NavController) {
                     .size(56.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color(0xFF1E88E5))
-                    .clickable { navController.navigate("Onboarding2") },
+                    .clickable { navigationManager.navigateToOnboarding2() },
                 contentAlignment = Alignment.Center
 
             ) {
@@ -118,7 +119,7 @@ fun OnboardingOne(navController: NavController) {
 @Preview
 @Composable
 fun OnboardingOnePreview() {
-    OnboardingOne(navController = rememberNavController())
+    OnboardingOne(navigationManager =NavigationManager(rememberNavController()))
 }
 
 
