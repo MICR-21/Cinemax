@@ -200,7 +200,7 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = title.take(25), // Truncate long titles
+                    text = title.take(25),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         color = Color.White,
                         fontWeight = FontWeight.Bold
@@ -215,12 +215,16 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
                 )
 
                 Text(
-                    text = "Duration: ${movie.duration?.take(20) ?: "Unknown"} min",
+                    text = "Duration: ${movie.duration?: "Unknown"} min",
                     style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
                 )
 
                 Text(
-                    text = "Genre: ${movie.genre ?: "Unknown"}",
+                    text = "${movie.genre?: "Unknown"}",
+                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+                )
+                Text(
+                    text = "Rating: ${movie.rating?: "Unknown"}",
                     style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
                 )
             }
