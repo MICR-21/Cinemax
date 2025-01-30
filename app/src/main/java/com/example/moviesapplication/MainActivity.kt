@@ -1,6 +1,8 @@
 package com.example.moviesapplication
 
-
+import coil.Coil
+import coil.ImageLoader
+import coil.util.DebugLogger
 import NavigationManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -28,6 +30,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
           MovieApp2()
+            Coil.setImageLoader(
+                ImageLoader.Builder(this)
+                    .logger(DebugLogger()) // Enable debug logs
+                    .build()
+            )
 //            HomeScreen(viewModel = MovieViewModel(), navigationManager = NavigationManager(rememberNavController()))
             }
         }
@@ -60,6 +67,10 @@ fun MovieApp2(viewModel: MovieViewModel = viewModel()) {
         }
     }
 }
+
+
+
+
 
 
 

@@ -52,6 +52,7 @@ android {
 dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.coil.compose)
+    implementation(libs.coil.compose.v250)
 //    implementation(libs.accompanist.permissions)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -44,109 +44,103 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
     val latestMovies = viewModel.latestMovies
     val upcomingMovies = viewModel.upcomingMovies
 
-    // Show a loading spinner while data is being fetched
-    if (latestMovies.isEmpty() && upcomingMovies.isEmpty()) {
+    Scaffold(
+        bottomBar = { BottomNavigationBar(navController = rememberNavController()) },
+        containerColor = Color(0xFF1F1D2B) // Dark background
+    ) { paddingValues ->
+
         Box(
-
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(Color(0xFF1F1D2B)) // Match background color
         ) {
-            Text(text = "No movies available", color = Color.Red )
-            CircularProgressIndicator(color = Color.Black)
-        }
-        return
-    }
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .background(Color(0xFF1F1D2B))
-    ) {
-        item {
-            // Greeting Section
-            Text(
-                text = "Hello, Smith",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Let's stream your favorite movie",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = Color.LightGray
-                )
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Search Bar Fix
-//
-            OutlinedTextField(
-                value = "",
-                onValueChange = {},
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp)),
-                placeholder = {
-                    Text(
-                        text = "Search a title",
-                        color = Color.Black
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                // Greeting Section
+                Text(
+                    text = "Hello, Smith",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
                     )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search",
-                        tint = Color.Black
+                )
+                Text(
+                    text = "Let's stream your favorite movie",
+                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.LightGray)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Search Bar
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = {},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF2A2935)), // Darker background
+                    placeholder = {
+                        Text("Search a title", color = Color.Gray)
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search",
+                            tint = Color.Gray
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color(0xFF2A2935),
+                        unfocusedContainerColor = Color(0xFF2A2935),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
                     )
-                },
-
-                colors = TextFieldDefaults.colors
-                    (
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.Gray,
                 )
-            )
-//coil for imagees
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Categories Section
-            Text(
-                text = "Categories",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
+                // Categories Section
+                Text(
+                    text = "Categories",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyRow {
-                items(listOf("All", "Comedy", "Animation", "Documentary", "Dramas")) { category ->
-                    CategoryChip(category = category)
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyRow {
+                    items(listOf("All", "Comedy", "Animation", "Documentary", "Dramas")) { category ->
+                        CategoryChip(category = category)
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Most Popular Section
+                Text(
+                    text = "Most Popular",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(latestMovies + upcomingMovies) { movie ->
+                        MovieItem(movie = movie, onClick = {
+                            navigationManager.navigateToMovieDetail(movie.id)
+                        })
+                    }
                 }
             }
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Most Popular Section
-            Text(
-                text = "Most Popular",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
         }
-
-        // Movie List
-        items(latestMovies + upcomingMovies) { movie ->
-            MovieItem(movie = movie, onClick = { navigationManager.navigateToMovieDetail(movie.id) })
-        }
-        // Bottom Navbar
-
     }
 }
+
 
 
 
@@ -182,7 +176,7 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
     ) {
         Column {
             AsyncImage(
-                model = "${movie.posterPath}",
+                model = "https://api.themoviedb.org/3/${movie.posterPath}",
                 contentDescription = "${movie.overview}",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -211,52 +205,75 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
 }
 
 
-//@Composable
-//fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modifier) {
-//    var selectedItem by remember { mutableStateOf(0) }
-//
-//    NavigationBar(
-//        modifier = modifier,
-//        containerColor = Color(0xFF7B1FA2),
-//        contentColor = Color.White
-//    ) {
-//        val items = listOf(
-//            BottomNavItem("Home", Icons.Filled.Home),
-//            BottomNavItem("Search", Icons.Filled.Search),
-//            BottomNavItem("Downloads", Icons.Default.PlayArrow),
-//            BottomNavItem("Profile", Icons.Filled.Person)
-//        )
-//
-//        items.forEachIndexed { index, item ->
-//            NavigationBarItem(
-//                icon = { Icon(item.icon, contentDescription = item.label) },
-//                label = { Text(text = item.label) },
-//                selected = selectedItem == index,
-//                onClick = { selectedItem = index },
-//                colors = NavigationBarItemDefaults.colors(
-//                    selectedIconColor = Color.White,
-//                    unselectedIconColor = Color.LightGray,
-//                    indicatorColor = Color(0xFF673AB7)
-//                )
-//            )
-//        }
-//    }
-//}
+@Composable
+fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modifier) {
+    var selectedItem by remember { mutableStateOf(0) }
+
+    val items = listOf(
+        BottomNavItem("Home", Icons.Filled.Home),
+        BottomNavItem("Search", Icons.Filled.Search),
+        BottomNavItem("Downloads", Icons.Filled.PlayArrow),
+        BottomNavItem("Profile", Icons.Filled.Person)
+    )
+
+    NavigationBar(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(90.dp)
+            .background(Color(0xFF1F1D2B)), // Dark background
+        containerColor = Color.Transparent,
+        contentColor = Color.White
+    ) {
+        items.forEachIndexed { index, item ->
+            NavigationBarItem(
+                selected = selectedItem == index,
+                onClick = { selectedItem = index },
+                icon = {
+                    Box(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(if (selectedItem == index) Color(0xFF00BCD4) else Color.Transparent),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = item.label,
+                            tint = if (selectedItem == index) Color.White else Color.Gray
+                        )
+                    }
+                },
+                label = {
+                    if (selectedItem == index) {
+                        Text(text = item.label, color = Color(0xFF00BCD4))
+                    }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.White,
+                    unselectedIconColor = Color.Gray,
+                    indicatorColor = Color.Transparent
+                )
+            )
+        }
+    }
+}
+
 
 data class BottomNavItem(val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector)
 
-//@Composable
-//fun MainScreenWithBottomNav() {
-//    val navController = rememberNavController()
-//
-//    Scaffold(
-//        bottomBar = { BottomNavigationBar(navController) }
-//    ) { paddingValues ->
-//        Box(modifier = Modifier.padding(paddingValues)) {
-//            // Add your screen content here
-//        }
-//    }
-//}
+
+@Composable
+fun MainScreenWithBottomNav() {
+    val navController = rememberNavController()
+
+    Scaffold(
+        bottomBar = { BottomNavigationBar(navController) }
+    ) { paddingValues ->
+        Box(modifier = Modifier.padding(paddingValues)) {
+            HomeScreen(navigationManager = NavigationManager(navController))
+        }
+    }
+}
 
 
 @Preview

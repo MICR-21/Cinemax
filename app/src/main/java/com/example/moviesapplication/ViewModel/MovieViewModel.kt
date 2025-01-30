@@ -11,10 +11,10 @@ import kotlinx.coroutines.launch
 
 class MovieViewModel : ViewModel() {
     private val _latestMovies = mutableStateListOf<Movie>()
-    val latestMovies: List<Movie> get() = _latestMovies
+    val latestMovies = _latestMovies  // Keep as mutable state
 
     private val _upcomingMovies = mutableStateListOf<Movie>()
-    val upcomingMovies: List<Movie> get() = _upcomingMovies
+    val upcomingMovies = _upcomingMovies  // Keep as mutable state
 
     init {
         fetchMovies()
@@ -24,28 +24,23 @@ class MovieViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val latestResponse = RetrofitInstance.api.getLatestMovies("cc76364ac8a0d9232dcbc2d487631e8c")
-                if (latestResponse.results != null) {  // Ensure results is not null
-                    _latestMovies.clear()
-                    _latestMovies.addAll(latestResponse.results)
-                } else {
-                    // Handle case where the results are null (perhaps show an error message)
-                    Log.i("MovieViewModel", "latestResponse.results is null") ///informative message
-//                  debugging messages -> Log.d
+                Log.d("MovieViewModel", "Latest Movies Response: $latestResponse")
 
+                latestResponse.results?.let {
+                    _latestMovies.clear()
+                    _latestMovies.addAll(it)
                 }
 
                 val upcomingResponse = RetrofitInstance.api.getUpcomingMovies("cc76364ac8a0d9232dcbc2d487631e8c")
-                if (upcomingResponse.results != null) {  // Ensure results is not null
-                    _upcomingMovies.clear()
-                    _upcomingMovies.addAll(upcomingResponse.results)
-                } else {
-                    // Handle case where the results are null
-                }
+                Log.d("MovieViewModel", "Upcoming Movies Response: $upcomingResponse")
 
+                upcomingResponse.results?.let {
+                    _upcomingMovies.clear()
+                    _upcomingMovies.addAll(it)
+                }
             } catch (e: Exception) {
-                e.printStackTrace() // Log any exceptions
+                Log.e("MovieViewModel", "Error fetching movies", e)
             }
         }
     }
-
 }
