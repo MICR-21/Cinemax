@@ -28,12 +28,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.moviesapplication.ViewModel.MovieViewModel
 import com.example.moviesapplication.data.Movie
 
@@ -63,6 +65,7 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
                 // Greeting Section
                 Text(
                     text = "Hello, Smith",
+
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = Color.White,
                         fontWeight = FontWeight.Bold
@@ -164,45 +167,68 @@ fun CategoryChip(category: String) {
 }
 
 @Composable
-
 fun MovieItem(movie: Movie, onClick: () -> Unit) {
     val title = movie.title ?: "Unknown Title"
-    // Default to a fallback value if title is null
 
     Card(
         modifier = Modifier
-            .padding(8.dp)
+            .fillMaxWidth()
             .clickable { onClick() }
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF252836)),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column {
-            AsyncImage(
-                model = "https://api.themoviedb.org/3/${movie.posterPath}",
-                contentDescription = "${movie.overview}",
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp) // Spacing between image & text
+        ) {
+            Image(
+                painter = rememberAsyncImagePainter(movie.getPosterUrl()),
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
+                    .size(120.dp) // Fixed size for consistency
                     .clip(RoundedCornerShape(8.dp)),
-//                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = title,  // Using safe value (not null)
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-            Text(
-                text = movie.releaseDate ?: "Unknown Release",  // Handle release date safely
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = Color.Black
-                ),
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-            )
+
+            Column(
+                modifier = Modifier.weight(1f), // Takes available space
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = title.take(25), // Truncate long titles
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(
+                    text = "Year: ${movie.releaseDate?.take(4) ?: "Unknown"}",
+                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+                )
+
+                Text(
+                    text = "Duration: ${movie.duration?.take(20) ?: "Unknown"} min",
+                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+                )
+
+                Text(
+                    text = "Genre: ${movie.genre ?: "Unknown"}",
+                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+                )
+            }
         }
     }
 }
+
+
 
 
 @Composable
