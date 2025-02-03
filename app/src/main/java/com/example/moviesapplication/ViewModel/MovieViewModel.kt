@@ -23,7 +23,7 @@ class MovieViewModel : ViewModel() {
     private fun fetchMovies() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val latestResponse = RetrofitInstance.api.getLatestMovies("cc76364ac8a0d9232dcbc2d487631e8c")
+                val latestResponse = RetrofitInstance.api.getLatestMovies("YOUR_API_KEY")
                 Log.d("MovieViewModel", "Latest Movies Response: $latestResponse")
 
                 latestResponse.results?.let {
@@ -31,7 +31,7 @@ class MovieViewModel : ViewModel() {
                     _latestMovies.addAll(it)
                 }
 
-                val upcomingResponse = RetrofitInstance.api.getUpcomingMovies("cc76364ac8a0d9232dcbc2d487631e8c")
+                val upcomingResponse = RetrofitInstance.api.getUpcomingMovies("YOUR_API_KEY")
                 Log.d("MovieViewModel", "Upcoming Movies Response: $upcomingResponse")
 
                 upcomingResponse.results?.let {
