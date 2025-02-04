@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moviesapplication.BuildConfig
 import com.example.moviesapplication.data.Movie
 import com.example.moviesapplication.interfaces.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,7 @@ class MovieViewModel : ViewModel() {
     private fun fetchMovies() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val latestResponse = RetrofitInstance.api.getLatestMovies("cc76364ac8a0d9232dcbc2d487631e8c")
+                val latestResponse = RetrofitInstance.api.getLatestMovies(BuildConfig.API_KEY)
                 Log.d("MovieViewModel", "Latest Movies Response: $latestResponse")
 
                 latestResponse.results?.let {
@@ -31,7 +32,7 @@ class MovieViewModel : ViewModel() {
                     _latestMovies.addAll(it)
                 }
 
-                val upcomingResponse = RetrofitInstance.api.getUpcomingMovies("cc76364ac8a0d9232dcbc2d487631e8c")
+                val upcomingResponse = RetrofitInstance.api.getUpcomingMovies(BuildConfig.API_KEY)
                 Log.d("MovieViewModel", "Upcoming Movies Response: $upcomingResponse")
 
                 upcomingResponse.results?.let {
