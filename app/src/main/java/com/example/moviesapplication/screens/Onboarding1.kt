@@ -122,4 +122,3 @@ fun OnboardingOnePreview() {
     OnboardingOne(navigationManager =NavigationManager(rememberNavController()))
 }
 
-

@@ -14,54 +14,50 @@ import com.example.moviesapplication.screens.OnboardingThree
 import com.example.moviesapplication.screens.OnboardingTwo
 
 
-
-
-
-
 class NavigationManager(private val navController: NavHostController) {
 
-            // Navigate to Onboarding1
-            fun navigateToOnboarding1() {
-                navController.navigate("onboarding1") {
-                    popUpTo(navController.graph.startDestinationId)
-                    launchSingleTop = true
-                }
-            }
+    // Navigate to Onboarding1
+    fun navigateToOnboarding1() {
+        navController.navigate("onboarding1") {
+            popUpTo(navController.graph.startDestinationId)
+            launchSingleTop = true
+        }
+    }
 
-            // Navigate to Onboarding2
-            fun navigateToOnboarding2() {
-                navController.navigate("onboarding2") {
-                    launchSingleTop = true
-                }
-            }
+    // Navigate to Onboarding2
+    fun navigateToOnboarding2() {
+        navController.navigate("onboarding2") {
+            launchSingleTop = true
+        }
+    }
 
-            // Navigate to Onboarding3
-            fun navigateToOnboarding3() {
-                navController.navigate("onboarding3") {
-                    launchSingleTop = true
-                }
-            }
+    // Navigate to Onboarding3
+    fun navigateToOnboarding3() {
+        navController.navigate("onboarding3") {
+            launchSingleTop = true
+        }
+    }
 
-            // Navigate to MovieApp
-            fun navigateToHomeScreen() {
-                navController.navigate("HomeScreen") {
-                    popUpTo(navController.graph.startDestinationId)
-                    launchSingleTop = true
-                }
-            }
+    // Navigate to MovieApp
+    fun navigateToHomeScreen() {
+        navController.navigate("HomeScreen") {
+            popUpTo(navController.graph.startDestinationId)
+            launchSingleTop = true
+        }
+    }
 
-            // Navigate to Movie Detail screen
-            fun navigateToMovieDetail(movieId: Int) {
-                navController.navigate("detail/$movieId") {
-                    launchSingleTop = true
-                }
-            }
+    // Navigate to Movie Detail screen
+    fun navigateToMovieDetail(movieId: Int) {
+        navController.navigate("detail/$movieId") {
+            launchSingleTop = true
+        }
+    }
 
 
     // Go back to the previous screen
-            fun goBack() {
-                navController.popBackStack()
-            }
+    fun goBack() {
+        navController.popBackStack()
+    }
 
 
 }

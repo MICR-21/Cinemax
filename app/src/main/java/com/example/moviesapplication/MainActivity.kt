@@ -10,9 +10,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
+//import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
+//import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -29,17 +29,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-          MovieApp2()
+            MovieApp2()
             Coil.setImageLoader(
                 ImageLoader.Builder(this)
                     .logger(DebugLogger()) // Enable debug logs
                     .build()
             )
 //            HomeScreen(viewModel = MovieViewModel(), navigationManager = NavigationManager(rememberNavController()))
-            }
         }
-
     }
+
+}
 @Composable
 fun MovieApp2(viewModel: MovieViewModel = viewModel()) {
     val navController = rememberNavController()
@@ -67,7 +67,6 @@ fun MovieApp2(viewModel: MovieViewModel = viewModel()) {
         }
     }
 }
-
 
 
 
