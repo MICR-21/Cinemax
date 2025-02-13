@@ -95,7 +95,7 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager) {
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = "${movie.releaseDate} | ${movie.duration} min",
+                    text = "${movie.releaseDate} | ${movie.popularity} ",
                     style = MaterialTheme.typography.bodyLarge.copy(color = Color.Gray)
                 )
             }
@@ -176,5 +176,5 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager) {
 @Composable
 fun MovieDetailScreenPreview() {
     MovieDetailScreen(navigationManager = NavigationManager(rememberNavController()),movie = Movie(
-        id = 1, "Title", "Overview", "posterPath", "releaseDate" , "rating" , "duration","genre"))
+        id = 1, "Title", "Overview", "posterPath", "releaseDate" , "rating" , "popularity",voteCount= 10))
 }

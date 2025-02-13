@@ -43,8 +43,15 @@ import com.example.moviesapplication.data.Movie
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: NavigationManager) {
+    var searchQuery by remember { mutableStateOf("") }
+
     val latestMovies = viewModel.latestMovies
     val upcomingMovies = viewModel.upcomingMovies
+
+    // 🔍 Filter movies based on the search query
+    val filteredMovies = (latestMovies).filter {
+        it.title.contains(searchQuery, ignoreCase = true)
+    }
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = rememberNavController()) },
@@ -64,8 +71,7 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
             ) {
                 // Greeting Section
                 Text(
-                    text = "Hello, Smith",
-
+                    text = "Hello, Smith ",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = Color.White,
                         fontWeight = FontWeight.Bold
@@ -73,21 +79,20 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
                 )
                 Text(
                     text = "Let's stream your favorite movie",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.LightGray)
+                    style = MaterialTheme.typography.titleMedium.copy(color = Color.White,
+                        fontWeight = FontWeight.Bold)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Search Bar
+                // 🔍 Search Bar
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },  // Update search query state
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color(0xFF2A2935)), // Darker background
-                    placeholder = {
-                        Text("Search a title", color = Color.Gray)
-                    },
+                    placeholder = { Text("Search a title", color = Color.Gray) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
@@ -112,13 +117,13 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
                         fontWeight = FontWeight.Bold
                     )
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(18.dp))
                 LazyRow {
                     items(listOf("All", "Comedy", "Animation", "Documentary", "Dramas")) { category ->
                         CategoryChip(category = category)
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(18.dp))
 
                 // Most Popular Section
                 Text(
@@ -128,12 +133,14 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
                         fontWeight = FontWeight.Bold
                     )
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(18.dp))
 
+
+                // 🔍 Show Filtered Movies
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(latestMovies + upcomingMovies) { movie ->
+                    items(filteredMovies) { movie ->  // Show only filtered movies
                         MovieItem(movie = movie, onClick = {
                             navigationManager.navigateToMovieDetail(movie.id)
                         })
@@ -143,9 +150,6 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
         }
     }
 }
-
-
-
 
 @Composable
 fun CategoryChip(category: String) {
@@ -215,12 +219,12 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
                 )
 
                 Text(
-                    text = "Duration: ${movie.duration?: "Unknown"} min",
+                    text = "Popularity: ${movie.popularity?: "Unknown"}",
                     style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
                 )
 
                 Text(
-                    text = "${movie.genre?: "Unknown"}",
+                    text = "Vote Count: ${movie.voteCount?: "Unknown"}",
                     style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
                 )
                 Text(
@@ -231,8 +235,6 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
         }
     }
 }
-
-
 
 
 @Composable
@@ -288,9 +290,7 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
     }
 }
 
-
 data class BottomNavItem(val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector)
-
 
 @Composable
 fun MainScreenWithBottomNav() {
@@ -304,7 +304,6 @@ fun MainScreenWithBottomNav() {
         }
     }
 }
-
 
 @Preview
 @Composable

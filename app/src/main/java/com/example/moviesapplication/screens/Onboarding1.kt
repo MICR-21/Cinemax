@@ -7,14 +7,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,102 +21,163 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moviesapplication.R
 
 @Composable
-fun OnboardingOne(navigationManager: NavigationManager ) {
-    Column(
+fun OnboardingScreen(navigationManager: NavigationManager) {
+    var currentPage by remember { mutableStateOf(0) }
+
+    val onboardingPages = listOf(
+        OnboardingPage(
+            imageRes = R.drawable.onboarding1,
+            title = "Lorem ipsum dolor sit amet consecteur esplicit",
+            description = "Semper in cursus magna et eu varius nunc adipiscing."
+        ),
+        OnboardingPage(
+            imageRes = R.drawable.onboarding2,
+            title = "Discover Amazing Movies",
+            description = "Explore a wide range of movies and stream your favorites."
+        ),
+        OnboardingPage(
+            imageRes = R.drawable.onboarding3,
+            title = "Enjoy with Friends & Family",
+            description = "Watch together, share your favorite moments, and have fun."
+        )
+    )
+
+    val isLastPage = currentPage == onboardingPages.lastIndex
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF121212))
-            .padding(bottom = 4.dp),
-
-
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
-
+            .background(Color(0xFF1F1D2B))
+            .padding(16.dp)
     ) {
-        // Top Section - Image
-
-        Image(
-            painter = painterResource(id = R.drawable.onboarding1),
-            contentDescription = "Person with phone",
-            modifier = Modifier.size(500.dp),// Larger image for emphasis
-            contentScale = ContentScale.Crop
-        )
-
-        // Middle Section - Text
-        Column(horizontalAlignment = Alignment.CenterHorizontally, ) {
-            Text(
-                text = "Lorem ipsum dolor sit amet consecteur esplicit",
-                style = TextStyle(
-                    fontSize = 22.sp, // Bigger font size
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                ),
-                modifier = Modifier
-                    .padding(bottom = 21.dp,)
-                    .fillMaxWidth(),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-            )
-            Text(
-                text = "Semper in cursus magna et eu varius nunc adipiscing.",
-                style = TextStyle(fontSize = 16.sp, color = Color.LightGray),
-                modifier = Modifier.padding(horizontal = 16.dp),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-            )
-        }
-
-        // Bottom Section - Indicators and Button
-        // Navigation Row
-        Row(
-            modifier = Modifier.padding(bottom = 24.dp)
-                .padding(horizontal = 56.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Dots indicator
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                repeat(3) { index ->
-                    Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(if (index == 1) Color(0xFF1E88E5) else Color.Gray)
+            // Display Image
+            Image(
+                painter = painterResource(id = onboardingPages[currentPage].imageRes),
+                contentDescription = "Onboarding Image",
+                modifier = Modifier
+                    .padding(top = 60.dp)
+                    .fillMaxWidth()
+                    .height(500.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Display Title
+            Text(
+                text = onboardingPages[currentPage].title,
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                ),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Display Description
+            Text(
+                text = onboardingPages[currentPage].description,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = Color.LightGray,
+                    textAlign = TextAlign.Center
+                ),
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Page Indicator & Next Button
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Dot Indicators
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    repeat(onboardingPages.size) { index ->
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .clip(CircleShape)
+                                .background(if (index == currentPage) Color(0xFF1E88E5) else Color.Gray)
+                        )
+                    }
+                }
+
+                // Back Button
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color(0xFF1E88E5))
+                        .clickable {
+                            navigationManager.goBack()
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Next Button",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
                     )
                 }
-            }
-
-            // Navigation Button
-            Box(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xFF1E88E5))
-                    .clickable { navigationManager.navigateToOnboarding2() },
-                contentAlignment = Alignment.Center
-
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowForward, // Replace with custom arrow icon if needed
-                    contentDescription = "Next Button",
-                    tint = Color.White,
+                // Back Button
+                Box(
                     modifier = Modifier
-                        .size(24.dp)
-                )
-
+                        .size(56.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color(0xFF1E88E5))
+                        .clickable {
+                            if (isLastPage) {
+                                navigationManager.navigateToHomeScreen()
+                            } else {
+                                currentPage++
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = "next Button",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
     }
 }
+
+// Data class to store onboarding page details
+data class OnboardingPage(
+    val imageRes: Int,
+    val title: String,
+    val description: String
+)
+
+//
 @Preview
 @Composable
-fun OnboardingOnePreview() {
-    OnboardingOne(navigationManager =NavigationManager(rememberNavController()))
+fun OnboardingScreenPreview() {
+    OnboardingScreen(navigationManager = NavigationManager(rememberNavController()))
 }
-

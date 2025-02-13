@@ -19,10 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.moviesapplication.ViewModel.MovieViewModel
 import com.example.moviesapplication.screens.HomeScreen
 import com.example.moviesapplication.screens.MovieDetailScreen
-//import com.example.moviesapplication.screens.MovieApp
-import com.example.moviesapplication.screens.OnboardingOne
-import com.example.moviesapplication.screens.OnboardingThree
-import com.example.moviesapplication.screens.OnboardingTwo
+import com.example.moviesapplication.screens.OnboardingScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,31 +39,31 @@ class MainActivity : ComponentActivity() {
 }
 @Composable
 fun MovieApp2(viewModel: MovieViewModel = viewModel()) {
-    val navController = rememberNavController()
-    val navigationManager = remember { NavigationManager(navController) }
+        val navController = rememberNavController()
+        val navigationManager = remember { NavigationManager(navController) }
+        val viewModel: MovieViewModel = viewModel()  // Correct placement
 
-    NavHost(navController, startDestination = "onboarding1") {
-        // Onboarding Screens
-        composable("Onboarding1") { OnboardingOne(navigationManager = navigationManager) }
-        composable("Onboarding2") { OnboardingTwo(navigationManager = navigationManager)        }
-        composable("Onboarding3") { OnboardingThree(navigationManager = navigationManager) }
+        NavHost(navController, startDestination = "onboarding") {  // Single onboarding screen
+            // Single Onboarding Screen
+            composable("onboarding") { OnboardingScreen(navigationManager = navigationManager) }
 
-        // MovieApp Screens
-        composable("HomeScreen") {
-            HomeScreen(viewModel = viewModel, navigationManager = navigationManager)
-        }
-        composable("detail/{movieId}") { backStackEntry ->
-            val movieId = backStackEntry.arguments?.getString("movieId")?.toIntOrNull()
-            if (movieId != null) {
-                val movie = viewModel.latestMovies.find { it.id == movieId }
-                    ?: viewModel.upcomingMovies.find { it.id == movieId }
+            // MovieApp Screens
+            composable("HomeScreen") {
+                HomeScreen(viewModel = viewModel, navigationManager = navigationManager)
+            }
+            composable("detail/{movieId}") { backStackEntry ->
+                val movieId = backStackEntry.arguments?.getString("movieId")?.toIntOrNull()
+                val movie = movieId?.let {
+                    viewModel.latestMovies.find { it.id == movieId }
+                        ?: viewModel.upcomingMovies.find { it.id == movieId }
+                }
                 if (movie != null) {
                     MovieDetailScreen(movie = movie, navigationManager = navigationManager)
                 }
             }
         }
     }
-}
+
 
 
 
