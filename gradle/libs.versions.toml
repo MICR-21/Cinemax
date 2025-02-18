@@ -1,6 +1,7 @@
 [versions]
 accompanistPermissions = "0.29.2-alpha"
 agp = "8.5.2"
+androidxMaterialIconsExtended = "1.6.0"
 coilCompose = "2.2.2"
 coilComposeVersion = "2.5.0"
 converterGson = "2.9.0"
@@ -17,20 +18,31 @@ lifecycleViewmodelCompose = "2.8.7"
 loggingInterceptor = "4.9.2"
 material = "1.7.6"
 material3 = "1.3.1"
+material3Version = "1.2.0"
 navigationCompose = "2.8.5"
+navigationComposeVersion = "2.7.5"
 okhttp = "4.10.0"
 retrofitVersion = "2.9.0"
 compose = "1.7.6"
 material3-compose = "1.3.1"
 material3Android = "1.3.1"
+ui = "1.6.0"
+uiToolingPreview = "1.5.4"
+foundationLayoutAndroid = "1.7.2"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+androidx-compose-material-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "androidxMaterialIconsExtended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-ktx-v170 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-viewmodel-compose-v240 = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
+androidx-material3-v120 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
+androidx-navigation-compose-v275 = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
+androidx-ui-tooling-preview-v154 = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
+androidx-ui-v160 = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+androidx-x-x-x = { module = "androidx.compose.material3:1.2.0" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 coil-compose-v250 = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
@@ -53,6 +65,7 @@ logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", ver
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit2-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+androidx-foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android", version.ref = "foundationLayoutAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

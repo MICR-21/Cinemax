@@ -10,16 +10,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-//import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-//import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.moviesapplication.ViewModel.MovieViewModel
 import com.example.moviesapplication.screens.HomeScreen
+import com.example.moviesapplication.screens.LoginScreen
 import com.example.moviesapplication.screens.MovieDetailScreen
 import com.example.moviesapplication.screens.OnboardingScreen
+import com.example.moviesapplication.screens.SignUpScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,15 +41,22 @@ class MainActivity : ComponentActivity() {
 fun MovieApp2(viewModel: MovieViewModel = viewModel()) {
         val navController = rememberNavController()
         val navigationManager = remember { NavigationManager(navController) }
-        val viewModel: MovieViewModel = viewModel()  // Correct placement
+//        val viewModel: MovieViewModel = viewModel()  // Correct placement
 
-        NavHost(navController, startDestination = "onboarding") {  // Single onboarding screen
+        NavHost(navController, startDestination = "HomeScreen") {  // Single onboarding screen
             // Single Onboarding Screen
             composable("onboarding") { OnboardingScreen(navigationManager = navigationManager) }
 
             // MovieApp Screens
             composable("HomeScreen") {
                 HomeScreen(viewModel = viewModel, navigationManager = navigationManager)
+            }
+            //sign up and sign in screens
+            composable("SignUp"){
+                SignUpScreen(navigationManager = navigationManager)
+            }
+            composable("login") {
+                LoginScreen(navigationManager = navigationManager)
             }
             composable("detail/{movieId}") { backStackEntry ->
                 val movieId = backStackEntry.arguments?.getString("movieId")?.toIntOrNull()

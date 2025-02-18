@@ -86,6 +86,13 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.androidx.espresso.core)
+
+    implementation(libs.androidx.compose.material.material.icons.extended)
+    implementation(libs.androidx.ui.v160)
+    implementation(libs.androidx.material3.v120)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

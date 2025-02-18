@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -17,6 +18,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,37 +27,37 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.moviesapplication.ViewModel.MovieViewModel
 import com.example.moviesapplication.data.Movie
+import kotlin.math.max
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: NavigationManager) {
-    var searchQuery by remember { mutableStateOf("") }
-
     val latestMovies = viewModel.latestMovies
     val upcomingMovies = viewModel.upcomingMovies
 
-    // 🔍 Filter movies based on the search query
-    val filteredMovies = (latestMovies).filter {
-        it.title.contains(searchQuery, ignoreCase = true)
-    }
-
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController = rememberNavController()) },
+        bottomBar = { BottomNavigationBar(navigationManager = navigationManager) },
         containerColor = Color(0xFF1F1D2B) // Dark background
     ) { paddingValues ->
 
@@ -71,7 +74,8 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
             ) {
                 // Greeting Section
                 Text(
-                    text = "Hello, Smith ",
+                    text = "Hello, Smith",
+
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = Color.White,
                         fontWeight = FontWeight.Bold
@@ -79,20 +83,21 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
                 )
                 Text(
                     text = "Let's stream your favorite movie",
-                    style = MaterialTheme.typography.titleMedium.copy(color = Color.White,
-                        fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.LightGray)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // 🔍 Search Bar
+                // Search Bar
                 OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },  // Update search query state
+                    value = "",
+                    onValueChange = {},
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color(0xFF2A2935)), // Darker background
-                    placeholder = { Text("Search a title", color = Color.Gray) },
+                    placeholder = {
+                        Text("Search a title", color = Color.Gray)
+                    },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
@@ -117,13 +122,13 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
                         fontWeight = FontWeight.Bold
                     )
                 )
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 LazyRow {
                     items(listOf("All", "Comedy", "Animation", "Documentary", "Dramas")) { category ->
                         CategoryChip(category = category)
                     }
                 }
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // Most Popular Section
                 Text(
@@ -133,14 +138,12 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
                         fontWeight = FontWeight.Bold
                     )
                 )
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-
-                // 🔍 Show Filtered Movies
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(filteredMovies) { movie ->  // Show only filtered movies
+                    items(latestMovies + upcomingMovies) { movie ->
                         MovieItem(movie = movie, onClick = {
                             navigationManager.navigateToMovieDetail(movie.id)
                         })
@@ -150,6 +153,8 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
         }
     }
 }
+
+
 
 @Composable
 fun CategoryChip(category: String) {
@@ -236,9 +241,11 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
     }
 }
 
-
 @Composable
-fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modifier) {
+fun BottomNavigationBar(
+    navigationManager: NavigationManager, // Add navigationManager parameter
+    modifier: Modifier = Modifier
+) {
     var selectedItem by remember { mutableStateOf(0) }
 
     val items = listOf(
@@ -259,7 +266,12 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 selected = selectedItem == index,
-                onClick = { selectedItem = index },
+                onClick = {
+                    selectedItem = index
+                    if (item.label == "Profile") {
+                        navigationManager.navigateToSignUp() // Navigate to Sign Up when Home is clicked
+                    }
+                },
                 icon = {
                     Box(
                         modifier = Modifier
@@ -290,17 +302,41 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
     }
 }
 
-data class BottomNavItem(val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector)
+
+data class BottomNavItem(val label: String, val icon: ImageVector)
 
 @Composable
 fun MainScreenWithBottomNav() {
     val navController = rememberNavController()
-
+    val navigationManager = remember { NavigationManager(navController) }
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController) }
+        bottomBar = { BottomNavigationBar(navigationManager = navigationManager) }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            HomeScreen(navigationManager = NavigationManager(navController))
+            NavHost(navController, startDestination = "HomeScreen") {
+                composable("HomeScreen") {
+                    HomeScreen(
+                        navigationManager = NavigationManager(
+                            navController
+                        )
+                    )
+                }
+                composable("SignUp") {
+                    SignUpScreen(
+                        navigationManager = NavigationManager(
+                            navController
+                        )
+                    )
+                }
+            composable("login")
+            {
+                LoginScreen(
+                    navigationManager=NavigationManager(
+                    navController
+                )
+                )
+            }
+            }
         }
     }
 }
