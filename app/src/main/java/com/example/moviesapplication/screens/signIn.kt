@@ -3,14 +3,18 @@ package com.example.moviesapplication.screens
 import NavigationManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -44,56 +48,37 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moviesapplication.R
+import com.google.firebase.auth.FirebaseAuth
 
 
 @Composable
-fun LoginScreen(navigationManager: NavigationManager) {
+fun LoginScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF141622)),
+        modifier = Modifier.fillMaxSize().background(Color(0xFF141622)),
         contentAlignment = Alignment.Center
-        )
-    {
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var passwordVisible by remember { mutableStateOf(false) }
+    ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painter = painterResource(id = R.drawable.popcornapp),
-                contentDescription = "App Icon",
-                modifier = Modifier
-                    .size(100.dp)
-                )
-
+            Image(painter = painterResource(id = R.drawable.popcornapp), contentDescription = "App Icon", modifier = Modifier.size(100.dp))
             Spacer(modifier = Modifier.height(36.dp))
-
             Text("CINEMAX", fontSize = 34.sp, fontWeight = FontWeight.Bold, color = Color.White)
-
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            Text("Hi Charles,", fontSize = 28.sp, color = Color.White, fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif, textAlign = TextAlign.Center)
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text("Welcome back! Please enter \nyour details.", color = Color.White, fontSize = 18.sp, textAlign = TextAlign.Center, fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold)
-
-
             Spacer(modifier = Modifier.height(40.dp))
 
             // Email Field
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email Address",) },
+                label = { Text("Email Address") },
                 singleLine = true,
                 shape = RoundedCornerShape(10.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color(0xFF1E1E1E),
+//                    unfocusedContainerColor = Color(0xFF1E1E1E),
                     cursorColor = Color.White
 
                 ),
@@ -102,62 +87,88 @@ fun LoginScreen(navigationManager: NavigationManager) {
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Password Field with Eye Icon
+            // Password Field
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
                 singleLine = true,
                 shape = RoundedCornerShape(10.dp),
-                visualTransformation = if (passwordVisible) VisualTransformation.None
-                else PasswordVisualTransformation(),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    val image = if (passwordVisible) Icons.Filled.Visibility
-                    else Icons.Filled.VisibilityOff
+                    val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(image, contentDescription = "Toggle Password Visibility",
-                            tint = Color.Gray)
+                        Icon(image, contentDescription = "Toggle Password Visibility")
                     }
+
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color(0xFF1E1E1E),
                     cursorColor = Color.White
                 ),
                 modifier = Modifier.fillMaxWidth(0.8f)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Forgot Password
-            Text(
-                "Forgot Password?",
-                color = Color(0xFF00E5FF),
-                fontSize = 14.sp,
-                modifier = Modifier.align(Alignment.End)
-            )
-
             Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+
+            ) {
+                Text(
+                    "Sign Up",
+                    color = Color(0xFF00E5FF),
+                    fontSize = 14.sp,
+                    modifier = Modifier.clickable {
+                        navigationManager.navigateToSignUp()
+                    }
+                )
+                Spacer(modifier = Modifier.width(60.dp))
+                Text(
+                    // Forgot Password
+                    "Forgot Password?",
+                    color = Color(0xFF00E5FF),
+                    fontSize = 14.sp,
+                    modifier = Modifier.clickable {
+                        //
+                    }
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Display Error Message
+            if (errorMessage.isNotEmpty()) {
+                Text(errorMessage, color = Color.Red, fontSize = 14.sp)
+                Spacer(modifier = Modifier.height(10.dp))
+            }
 
             // Login Button
             Button(
                 onClick = {
-                    navigationManager.navigateToHomeScreen()
+                    auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                navigationManager.navigateToHomeScreen()
+                            } else {
+                                errorMessage = task.exception?.message ?: "Login failed"
+                            }
+                        }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00E5FF)),
                 modifier = Modifier.fillMaxWidth(0.8f)
             ) {
                 Text("Login", fontSize = 18.sp, color = Color.White)
             }
         }
     }
-
 }
 
-@Preview
+
+@Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview()
 {
-    LoginScreen(navigationManager = NavigationManager(rememberNavController()))
+    LoginScreen(navigationManager = NavigationManager(rememberNavController()),
+        auth = FirebaseAuth.getInstance())
 }

@@ -4,6 +4,7 @@ import java.io.FileInputStream
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.gms.google.services)
 }
 // Load the secrets.properties file
 val secretsProperties = Properties().apply {
@@ -92,6 +93,11 @@ dependencies {
     implementation(libs.androidx.compose.material.material.icons.extended)
     implementation(libs.androidx.ui.v160)
     implementation(libs.androidx.material3.v120)
+
+    implementation(libs.firebase.database)
+    implementation ("com.google.firebase:firebase-auth-ktx:22.3.1")
+
+
 
 
     testImplementation(libs.junit)

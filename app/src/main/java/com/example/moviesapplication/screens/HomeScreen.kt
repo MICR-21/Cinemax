@@ -47,12 +47,15 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.moviesapplication.ViewModel.MovieViewModel
 import com.example.moviesapplication.data.Movie
+import com.google.firebase.auth.FirebaseAuth
 import kotlin.math.max
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: NavigationManager) {
+fun HomeScreen(viewModel: MovieViewModel = viewModel(),
+               navigationManager: NavigationManager, auth: FirebaseAuth) {
     val latestMovies = viewModel.latestMovies
     val upcomingMovies = viewModel.upcomingMovies
 
@@ -60,7 +63,6 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
         bottomBar = { BottomNavigationBar(navigationManager = navigationManager) },
         containerColor = Color(0xFF1F1D2B) // Dark background
     ) { paddingValues ->
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,10 +74,12 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                // Greeting Section
-                Text(
-                    text = "Hello, Smith",
+                // Show the logged-in user's email
+                val currentUser = auth.currentUser
+                val userEmail = currentUser?.email ?: "Guest"
 
+                Text(
+                    text = "Hello, $userEmail",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = Color.White,
                         fontWeight = FontWeight.Bold
@@ -85,6 +89,20 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
                     text = "Let's stream your favorite movie",
                     style = MaterialTheme.typography.bodyMedium.copy(color = Color.LightGray)
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Logout Button
+                Button(
+                    onClick = {
+                        auth.signOut()
+                        navigationManager.navigateToLogin() // Navigate back to login after logout
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                ) {
+                    Text("Logout", color = Color.White)
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Search Bar
@@ -150,9 +168,12 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
                     }
                 }
             }
+
+            }
         }
     }
-}
+
+
 
 
 
@@ -242,10 +263,7 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
 }
 
 @Composable
-fun BottomNavigationBar(
-    navigationManager: NavigationManager, // Add navigationManager parameter
-    modifier: Modifier = Modifier
-) {
+fun BottomNavigationBar(navigationManager: NavigationManager, modifier: Modifier = Modifier) {
     var selectedItem by remember { mutableStateOf(0) }
 
     val items = listOf(
@@ -306,9 +324,10 @@ fun BottomNavigationBar(
 data class BottomNavItem(val label: String, val icon: ImageVector)
 
 @Composable
-fun MainScreenWithBottomNav() {
+fun MainScreenWithBottomNav(auth: FirebaseAuth) { // Pass auth as a parameter
     val navController = rememberNavController()
     val navigationManager = remember { NavigationManager(navController) }
+
     Scaffold(
         bottomBar = { BottomNavigationBar(navigationManager = navigationManager) }
     ) { paddingValues ->
@@ -316,33 +335,32 @@ fun MainScreenWithBottomNav() {
             NavHost(navController, startDestination = "HomeScreen") {
                 composable("HomeScreen") {
                     HomeScreen(
-                        navigationManager = NavigationManager(
-                            navController
-                        )
+                        viewModel = viewModel(), // Ensure ViewModel is passed
+                        navigationManager = navigationManager,
+                        auth = auth // Pass auth here
                     )
                 }
                 composable("SignUp") {
                     SignUpScreen(
-                        navigationManager = NavigationManager(
-                            navController
-                        )
+                        navigationManager = navigationManager,
+                        auth = auth // Pass auth here
                     )
                 }
-            composable("login")
-            {
-                LoginScreen(
-                    navigationManager=NavigationManager(
-                    navController
-                )
-                )
-            }
+                composable("login") {
+                    LoginScreen(
+                        navigationManager = navigationManager,
+                        auth = auth // Pass auth here
+                    )
+                }
             }
         }
     }
 }
 
+
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(viewModel = viewModel(), navigationManager = NavigationManager(rememberNavController()))
+    HomeScreen(viewModel = viewModel(), navigationManager = NavigationManager(rememberNavController()),
+        auth = FirebaseAuth.getInstance())
 }
