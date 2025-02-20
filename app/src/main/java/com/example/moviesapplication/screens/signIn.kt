@@ -133,7 +133,8 @@ fun LoginScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
                     color = Color(0xFF00E5FF),
                     fontSize = 14.sp,
                     modifier = Modifier.clickable {
-                        //
+                        navigationManager.navigateToForgotPassword()
+
                     }
                 )
             }

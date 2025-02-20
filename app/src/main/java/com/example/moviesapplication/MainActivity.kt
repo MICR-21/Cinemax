@@ -19,8 +19,10 @@ import com.example.moviesapplication.screens.LoginScreen
 import com.example.moviesapplication.screens.MovieDetailScreen
 import com.example.moviesapplication.screens.OnboardingScreen
 import com.example.moviesapplication.screens.ProfileScreen
+import com.example.moviesapplication.screens.ResetPasswordScreen
 //import com.example.moviesapplication.screens.ProfileScreenpreview
 import com.example.moviesapplication.screens.SignUpScreen
+import com.example.moviesapplication.screens.VerificationScreen
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
@@ -52,6 +54,7 @@ fun MovieApp2(auth: FirebaseAuth, viewModel: MovieViewModel = viewModel()) {
         composable("SignUp") { SignUpScreen(navigationManager = navigationManager, auth) }
         composable("login") { LoginScreen(navigationManager = navigationManager, auth ) }
         composable("profileScreen"){ ProfileScreen(navigationManager = navigationManager, auth = auth)}
+        composable("forgotPassword"){ ResetPasswordScreen(navigationManager = navigationManager)}
 //        composable("search"){}
         composable("detail/{movieId}") { backStackEntry ->
             val movieId = backStackEntry.arguments?.getString("movieId")?.toIntOrNull()
@@ -62,6 +65,10 @@ fun MovieApp2(auth: FirebaseAuth, viewModel: MovieViewModel = viewModel()) {
             if (movie != null) {
                 MovieDetailScreen(movie = movie, navigationManager = navigationManager)
             }
+        }
+        composable("otp/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            VerificationScreen(navigationManager, email)
         }
     }
 }

@@ -52,6 +52,8 @@ class NavigationManager(private val navController: NavHostController) {
         }
     }
 
+
+
     // navigate to search screen
     fun navigateToSearchScreen(){
         navController.navigate("search") {
@@ -63,6 +65,11 @@ class NavigationManager(private val navController: NavHostController) {
     // Navigate to Login Screen
     fun navigateToLogin() {
         navController.navigate("login") {
+            launchSingleTop = true
+        }
+    }
+    fun navigateToOTP(email:String){
+        navController.navigate("otp/$email"){
             launchSingleTop = true
         }
     }

@@ -61,8 +61,7 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager) {
                     .height(300.dp)
                     .padding(top = 40.dp)
                     .clip(RoundedCornerShape(12.dp))
-//                    .shadow(8.dp),
-//                contentScale = ContentScale.Crop
+//
             )
 
             Spacer(modifier = Modifier.height(16.dp))

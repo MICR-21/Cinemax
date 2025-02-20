@@ -61,9 +61,8 @@ fun ProfileScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-//                .padding(16.dp)
                 .background(Color(0xFF1F1D2B), shape = RoundedCornerShape(12.dp))
-                .padding(16.dp)
+                .padding(top = 26.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
@@ -80,6 +79,8 @@ fun ProfileScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         // Premium Member Banner
         Box(
@@ -105,16 +106,22 @@ fun ProfileScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
             ProfileOption("Member", Icons.Filled.Person)
             ProfileOption("Change Password", Icons.Filled.Lock)
 
+            Spacer(modifier = Modifier.height(35.dp))
+
             SectionHeader("General")
+            ProfileOption("Notifications", Icons.Default.Notifications)
             ProfileOption("Language", Icons.Filled.Language)
             ProfileOption("Country", Icons.Filled.Public)
+            ProfileOption("Clear Cache", Icons.Filled.Delete)
+
+            Spacer(modifier = Modifier.height(40.dp))
 
             SectionHeader("More")
             ProfileOption("Legal and Policies", Icons.Filled.Gavel)
             ProfileOption("Help & Feedback", Icons.Filled.Help)
             ProfileOption("About Us", Icons.Filled.Info)
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(35.dp))
 
             // Logout Button
             Button(
@@ -129,9 +136,9 @@ fun ProfileScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
             }
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Bottom Navigation Bar
-            BottomNavigationBar(navigationManager,Modifier )
         }
+        // Bottom Navigation Bar
+        BottomNavigationBar(navigationManager,Modifier )
     }
 
 
@@ -182,101 +189,3 @@ fun ProfileOption(label: String, icon: ImageVector) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//fun ProfileScreen(auth: FirebaseAuth, navigationManager: NavigationManager) {
-//    val currentUser = auth.currentUser
-//    val userName = currentUser?.displayName ?: "Guest"
-//    val userEmail = currentUser?.email ?: "No email"
-//
-//    Box(
-//        modifier = Modifier.fillMaxSize().background(Color(0xFF141622)),
-//        contentAlignment = Alignment.TopCenter
-//    ) {
-//        Column(modifier = Modifier.padding(16.dp)) {
-//            Spacer(modifier = Modifier.height(20.dp))
-//
-//            // Profile Info
-//            Row(verticalAlignment = Alignment.CenterVertically) {
-//                Image(
-//                    painter = painterResource(id = R.drawable.profile_placeholder),
-//                    contentDescription = "Profile Image",
-//                    modifier = Modifier.size(80.dp)
-//                )
-//                Spacer(modifier = Modifier.width(12.dp))
-//                Column {
-//                    Text(userName, fontSize = 20.sp, color = Color.White, fontWeight = FontWeight.Bold)
-//                    Text(userEmail, fontSize = 14.sp, color = Color.Gray)
-//                }
-//            }
-//
-//            Spacer(modifier = Modifier.height(20.dp))
-//
-//            // Logout Button
-//            Button(
-//                onClick = {
-//                    auth.signOut()
-//                    navigationManager.navigateToLogin() // Navigate back to login after logout
-//                },
-//                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-//            ) {
-//                Text("Logout", color = Color.White)
-//            }
-//        }
-//    }
-//}
-
-//@Preview
-//@Composable
-//fun ProfileScreenpreview(){
-//    ProfileScreen(navigationManager = NavigationManager(rememberNavController()),
-//        auth = FirebaseAuth.getInstance())
-//}

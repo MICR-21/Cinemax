@@ -87,7 +87,7 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(),
                 )
                 Text(
                     text = "Let's stream your favorite movie",
-                    style = MaterialTheme.typography.titleMedium .copy(color = Color.LightGray)
+                    style = MaterialTheme.typography.titleMedium.copy(color = Color.LightGray)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -341,6 +341,14 @@ fun MainScreenWithBottomNav(auth: FirebaseAuth) { // Pass auth as a parameter
                 }
                 composable("profileScreen")
                 { ProfileScreen(auth = auth, navigationManager = navigationManager) }
+
+                composable("forgotPassword"){ ResetPasswordScreen(
+                    navigationManager = navigationManager
+                )}
+                composable("otp/{email}") { backStackEntry ->
+                    val email = backStackEntry.arguments?.getString("email") ?: ""
+                    VerificationScreen(navigationManager, email)
+                }
 
             }
         }
