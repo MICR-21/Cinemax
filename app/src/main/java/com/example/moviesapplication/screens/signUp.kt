@@ -55,6 +55,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.moviesapplication.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.userProfileChangeRequest
 
 
 @Composable
@@ -112,12 +113,12 @@ fun SignUpScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
-                    cursorColor = Color.White
+                    cursorColor = Color.Black
                 ),
                 modifier = Modifier.fillMaxWidth(0.9f)
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Display Error Message if Any
             if (errorMessage.isNotEmpty()) {
@@ -125,13 +126,25 @@ fun SignUpScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
+            Spacer(modifier = Modifier.height(10.dp))
+
             // Sign Up Button
             Button(
                 onClick = {
                     auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                navigationManager.navigateToHomeScreen()
+                                val user = auth.currentUser
+                                val profileUpdates = userProfileChangeRequest {
+                                    displayName = fullName  // ✅ Save the full name in Firebase
+                                }
+                                user?.updateProfile(profileUpdates)?.addOnCompleteListener { profileTask ->
+                                    if (profileTask.isSuccessful) {
+                                        navigationManager.navigateToHomeScreen()
+                                    } else {
+                                        errorMessage = "Failed to update profile name"
+                                    }
+                                }
                             } else {
                                 errorMessage = task.exception?.message ?: "Sign-up failed"
                             }
@@ -141,9 +154,26 @@ fun SignUpScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
             ) {
                 Text("Sign Up", fontSize = 20.sp, color = Color.White)
             }
-            Spacer(modifier = Modifier.height(26.dp))
+            Spacer(modifier = Modifier.height(14.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(0.9f),
+                horizontalArrangement = Arrangement.Center
+            ){
+                Text(
+                    "Already have an account ?  Sign In",
+                    color = Color(0xFF00E5FF),
+                    fontSize = 18.sp,
+                    modifier = Modifier.clickable {
+                        navigationManager.navigateToLogin()
+                    }
+                )
+            }
+            Spacer(modifier = Modifier.height(14.dp))
+
             Text("Or Sign up with", color = Color.Gray, fontSize = 18.sp)
-            Spacer(modifier = Modifier.height(26.dp))
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -162,6 +192,7 @@ fun SignUpScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
         }
     }
 }
+
 
 
 

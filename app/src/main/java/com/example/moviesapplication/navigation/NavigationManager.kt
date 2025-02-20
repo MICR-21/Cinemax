@@ -17,6 +17,13 @@ class NavigationManager(private val navController: NavHostController) {
             launchSingleTop = true
         }
     }
+    //navigate to ProfileScreen
+    fun navigateToProfileScreen() {
+        navController.navigate("profileScreen"){
+        launchSingleTop = true
+        }
+    }
+
 
     // Navigate to Movie Detail Screen
     fun navigateToMovieDetail(movieId: Int) {
@@ -31,6 +38,27 @@ class NavigationManager(private val navController: NavHostController) {
             launchSingleTop = true
         }
     }
+    // Navigate to ForgotPassword Screen
+    fun navigateToForgotPassword() {
+        navController.navigate("forgotPassword") {
+            launchSingleTop = true
+        }
+    }
+
+    //navigate to downloads screen
+    fun navigateToDownloadsScreen() {
+        navController.navigate("downloads") {
+            launchSingleTop = true
+        }
+    }
+
+    // navigate to search screen
+    fun navigateToSearchScreen(){
+        navController.navigate("search") {
+            launchSingleTop = true
+        }
+    }
+
 
     // Navigate to Login Screen
     fun navigateToLogin() {

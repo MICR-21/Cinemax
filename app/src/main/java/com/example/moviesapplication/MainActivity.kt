@@ -18,6 +18,8 @@ import com.example.moviesapplication.screens.HomeScreen
 import com.example.moviesapplication.screens.LoginScreen
 import com.example.moviesapplication.screens.MovieDetailScreen
 import com.example.moviesapplication.screens.OnboardingScreen
+import com.example.moviesapplication.screens.ProfileScreen
+//import com.example.moviesapplication.screens.ProfileScreenpreview
 import com.example.moviesapplication.screens.SignUpScreen
 import com.google.firebase.auth.FirebaseAuth
 
@@ -49,6 +51,8 @@ fun MovieApp2(auth: FirebaseAuth, viewModel: MovieViewModel = viewModel()) {
         composable("HomeScreen") { HomeScreen(viewModel = viewModel, navigationManager = navigationManager,auth) }
         composable("SignUp") { SignUpScreen(navigationManager = navigationManager, auth) }
         composable("login") { LoginScreen(navigationManager = navigationManager, auth ) }
+        composable("profileScreen"){ ProfileScreen(navigationManager = navigationManager, auth = auth)}
+//        composable("search"){}
         composable("detail/{movieId}") { backStackEntry ->
             val movieId = backStackEntry.arguments?.getString("movieId")?.toIntOrNull()
             val movie = movieId?.let {

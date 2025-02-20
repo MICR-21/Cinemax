@@ -96,6 +96,8 @@ dependencies {
 
     implementation(libs.firebase.database)
     implementation ("com.google.firebase:firebase-auth-ktx:22.3.1")
+    implementation (libs.play.services.auth)
+
 
 
 

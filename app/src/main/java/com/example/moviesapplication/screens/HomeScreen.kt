@@ -76,10 +76,10 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(),
             ) {
                 // Show the logged-in user's email
                 val currentUser = auth.currentUser
-                val userEmail = currentUser?.email ?: "Guest"
+                val userName =  currentUser?.displayName?: "Guest"
 
                 Text(
-                    text = "Hello, $userEmail",
+                    text = "Hello, $userName",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = Color.White,
                         fontWeight = FontWeight.Bold
@@ -87,21 +87,8 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(),
                 )
                 Text(
                     text = "Let's stream your favorite movie",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.LightGray)
+                    style = MaterialTheme.typography.titleMedium .copy(color = Color.LightGray)
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Logout Button
-                Button(
-                    onClick = {
-                        auth.signOut()
-                        navigationManager.navigateToLogin() // Navigate back to login after logout
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                ) {
-                    Text("Logout", color = Color.White)
-                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -172,10 +159,6 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(),
             }
         }
     }
-
-
-
-
 
 @Composable
 fun CategoryChip(category: String) {
@@ -286,8 +269,11 @@ fun BottomNavigationBar(navigationManager: NavigationManager, modifier: Modifier
                 selected = selectedItem == index,
                 onClick = {
                     selectedItem = index
-                    if (item.label == "Profile") {
-                        navigationManager.navigateToSignUp() // Navigate to Sign Up when Home is clicked
+                    when (item.label) {
+                        "Profile" -> navigationManager.navigateToProfileScreen() // ✅ Navigate to Profile Screen
+                        "Home" -> navigationManager.navigateToHomeScreen() // ✅ Add Home navigation
+//                        "Search" -> navigationManager.navigateToSearchScreen() // ✅ Add Search navigation
+//                        "Downloads" -> navigationManager.navigateToDownloadsScreen() // ✅ Add Downloads navigation
                     }
                 },
                 icon = {
@@ -321,6 +307,7 @@ fun BottomNavigationBar(navigationManager: NavigationManager, modifier: Modifier
 }
 
 
+
 data class BottomNavItem(val label: String, val icon: ImageVector)
 
 @Composable
@@ -332,12 +319,12 @@ fun MainScreenWithBottomNav(auth: FirebaseAuth) { // Pass auth as a parameter
         bottomBar = { BottomNavigationBar(navigationManager = navigationManager) }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            NavHost(navController, startDestination = "HomeScreen") {
+            NavHost(navController, startDestination = "login") {
                 composable("HomeScreen") {
                     HomeScreen(
-                        viewModel = viewModel(), // Ensure ViewModel is passed
+                        viewModel = viewModel(),
                         navigationManager = navigationManager,
-                        auth = auth // Pass auth here
+                        auth = auth
                     )
                 }
                 composable("SignUp") {
@@ -352,6 +339,9 @@ fun MainScreenWithBottomNav(auth: FirebaseAuth) { // Pass auth as a parameter
                         auth = auth // Pass auth here
                     )
                 }
+                composable("profileScreen")
+                { ProfileScreen(auth = auth, navigationManager = navigationManager) }
+
             }
         }
     }

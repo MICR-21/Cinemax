@@ -78,8 +78,8 @@ fun LoginScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-//                    unfocusedContainerColor = Color(0xFF1E1E1E),
-                    cursorColor = Color.White
+                    unfocusedContainerColor = Color.White,
+                    cursorColor = Color.Black
 
                 ),
                 modifier = Modifier.fillMaxWidth(0.8f)
@@ -105,7 +105,8 @@ fun LoginScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
-                    cursorColor = Color.White
+                    unfocusedContainerColor = Color.White,
+                    cursorColor = Color.Black
                 ),
                 modifier = Modifier.fillMaxWidth(0.8f)
             )
