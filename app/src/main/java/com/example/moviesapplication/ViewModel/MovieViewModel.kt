@@ -1,7 +1,9 @@
 package com.example.moviesapplication.ViewModel
 
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviesapplication.BuildConfig
@@ -12,10 +14,13 @@ import kotlinx.coroutines.launch
 
 class MovieViewModel : ViewModel() {
     private val _latestMovies = mutableStateListOf<Movie>()
-    val latestMovies = _latestMovies  // Keep as mutable state
+    val latestMovies: List<Movie> get() = _latestMovies
 
     private val _upcomingMovies = mutableStateListOf<Movie>()
-    val upcomingMovies = _upcomingMovies  // Keep as mutable state
+    val upcomingMovies: List<Movie> get() = _upcomingMovies
+
+    private val _isLoading = mutableStateOf(false)
+    val isLoading: State<Boolean> get() = _isLoading
 
     init {
         fetchMovies()
@@ -23,24 +28,42 @@ class MovieViewModel : ViewModel() {
 
     private fun fetchMovies() {
         viewModelScope.launch(Dispatchers.IO) {
+            _isLoading.value = true
             try {
                 val latestResponse = RetrofitInstance.api.getLatestMovies(BuildConfig.API_KEY)
-                Log.d("MovieViewModel", "Latest Movies Response: $latestResponse")
+                val upcomingResponse = RetrofitInstance.api.getUpcomingMovies(BuildConfig.API_KEY)
 
-                latestResponse.results?.let {
+                latestResponse.results?.let { latestMoviesList ->
                     _latestMovies.clear()
-                    _latestMovies.addAll(it)
+                    _latestMovies.addAll(fetchMoviesWithDetails(latestMoviesList))
                 }
 
-                val upcomingResponse = RetrofitInstance.api.getUpcomingMovies(BuildConfig.API_KEY)
-                Log.d("MovieViewModel", "Upcoming Movies Response: $upcomingResponse")
-
-                upcomingResponse.results?.let {
+                upcomingResponse.results?.let { upcomingMoviesList ->
                     _upcomingMovies.clear()
-                    _upcomingMovies.addAll(it)
+                    _upcomingMovies.addAll(fetchMoviesWithDetails(upcomingMoviesList))
                 }
             } catch (e: Exception) {
                 Log.e("MovieViewModel", "Error fetching movies", e)
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    /**
+     * Fetch additional details (duration & genre) for each movie.
+     */
+    private suspend fun fetchMoviesWithDetails(movies: List<Movie>): List<Movie> {
+        return movies.map { movie ->
+            try {
+                val details = RetrofitInstance.api.getMovieDetails(movie.id, BuildConfig.API_KEY)
+                movie.copy(
+                    duration = "${details.runtime ?: 0} Minutes",
+                    genre = details.genres?.joinToString(" | ") { it.name ?: "" } ?: "Unknown"
+                )
+            } catch (e: Exception) {
+                Log.e("MovieViewModel", "Error fetching details for movie ${movie.id}", e)
+                movie // Return the original movie object if details fetch fails
             }
         }
     }

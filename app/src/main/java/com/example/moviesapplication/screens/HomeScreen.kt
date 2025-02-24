@@ -54,10 +54,15 @@ import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: MovieViewModel = viewModel(),
-               navigationManager: NavigationManager, auth: FirebaseAuth) {
+fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: NavigationManager,
+               auth: FirebaseAuth) {
     val latestMovies = viewModel.latestMovies
     val upcomingMovies = viewModel.upcomingMovies
+
+    var query by remember { mutableStateOf("") } // State for search query
+    val filteredMovies = (latestMovies + upcomingMovies).filter {
+        it.title.contains(query, ignoreCase = true)
+    }
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navigationManager = navigationManager) },
@@ -76,10 +81,10 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(),
             ) {
                 // Show the logged-in user's email
                 val currentUser = auth.currentUser
-                val userName =  currentUser?.displayName?: "Guest"
+                val userName = currentUser?.displayName ?: "Guest"
 
                 Text(
-                    text = "Hello, $userName",
+                    text = "Welcome, $userName",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         color = Color.White,
                         fontWeight = FontWeight.Bold
@@ -94,8 +99,8 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(),
 
                 // Search Bar
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = query,
+                    onValueChange = { query = it },
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
@@ -145,20 +150,21 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // Display filtered movies instead of all movies
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(latestMovies + upcomingMovies) { movie ->
+                    items(filteredMovies) { movie ->
                         MovieItem(movie = movie, onClick = {
                             navigationManager.navigateToMovieDetail(movie.id)
                         })
                     }
                 }
             }
-
-            }
         }
     }
+}
+
 
 @Composable
 fun CategoryChip(category: String) {
@@ -234,6 +240,14 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
 
                 Text(
                     text = "Vote Count: ${movie.voteCount?: "Unknown"}",
+                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+                )
+                Text(
+                    text = "Genre: ${movie.genre?: "Unknown"}",
+                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+                )
+                Text(
+                    text = "Duration: ${movie.duration?: "Unknown"}",
                     style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
                 )
                 Text(
@@ -345,10 +359,10 @@ fun MainScreenWithBottomNav(auth: FirebaseAuth) { // Pass auth as a parameter
                 composable("forgotPassword"){ ResetPasswordScreen(
                     navigationManager = navigationManager
                 )}
-                composable("otp/{email}") { backStackEntry ->
-                    val email = backStackEntry.arguments?.getString("email") ?: ""
-                    VerificationScreen(navigationManager, email)
-                }
+//                composable("otp/{email}") { backStackEntry ->
+//                    val email = backStackEntry.arguments?.getString("email") ?: ""
+//                    VerificationScreen(navigationManager, email)
+//                }
 
             }
         }

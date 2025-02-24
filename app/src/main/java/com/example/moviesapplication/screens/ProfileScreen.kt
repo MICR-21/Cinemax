@@ -80,7 +80,7 @@ fun ProfileScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Premium Member Banner
         Box(
@@ -98,30 +98,30 @@ fun ProfileScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Account & Settings Options
         Column(modifier = Modifier.padding(horizontal = 5.dp)) {
             SectionHeader("Account")
-            ProfileOption("Member", Icons.Filled.Person)
-            ProfileOption("Change Password", Icons.Filled.Lock)
+            ProfileOption("Member", Icons.Filled.Person, navigationManager)
+            ProfileOption("Change Password", Icons.Filled.Lock, navigationManager)
 
-            Spacer(modifier = Modifier.height(35.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             SectionHeader("General")
-            ProfileOption("Notifications", Icons.Default.Notifications)
-            ProfileOption("Language", Icons.Filled.Language)
-            ProfileOption("Country", Icons.Filled.Public)
-            ProfileOption("Clear Cache", Icons.Filled.Delete)
+            ProfileOption("Notifications", Icons.Default.Notifications, navigationManager)
+            ProfileOption("Language", Icons.Filled.Language, navigationManager)
+            ProfileOption("Country", Icons.Filled.Public, navigationManager)
+            ProfileOption("Clear Cache", Icons.Filled.Delete, navigationManager)
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             SectionHeader("More")
-            ProfileOption("Legal and Policies", Icons.Filled.Gavel)
-            ProfileOption("Help & Feedback", Icons.Filled.Help)
-            ProfileOption("About Us", Icons.Filled.Info)
+            ProfileOption("Legal and Policies", Icons.Filled.Gavel, navigationManager)
+            ProfileOption("Help & Feedback", Icons.Filled.Help, navigationManager)
+            ProfileOption("About Us", Icons.Filled.Info, navigationManager)
 
-            Spacer(modifier = Modifier.height(35.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             // Logout Button
             Button(
@@ -134,7 +134,7 @@ fun ProfileScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
             ) {
                 Text("Log Out", color = Color.White, fontSize = 16.sp)
             }
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
         }
         // Bottom Navigation Bar
@@ -158,12 +158,14 @@ fun SectionHeader(title: String) {
 
 // Profile Option Item
 @Composable
-fun ProfileOption(label: String, icon: ImageVector) {
+fun ProfileOption(label: String, icon: ImageVector, navigationManager: NavigationManager) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { /* Handle Click */ },
+            .clickable { /* Handle Click */
+                navigationManager.navigateToHomeScreen()
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(imageVector = icon, contentDescription = label, tint = Color.White, modifier = Modifier.size(24.dp))

@@ -17,13 +17,13 @@ class NavigationManager(private val navController: NavHostController) {
             launchSingleTop = true
         }
     }
+
     //navigate to ProfileScreen
     fun navigateToProfileScreen() {
-        navController.navigate("profileScreen"){
-        launchSingleTop = true
+        navController.navigate("profileScreen") {
+            launchSingleTop = true
         }
     }
-
 
     // Navigate to Movie Detail Screen
     fun navigateToMovieDetail(movieId: Int) {
@@ -38,6 +38,7 @@ class NavigationManager(private val navController: NavHostController) {
             launchSingleTop = true
         }
     }
+
     // Navigate to ForgotPassword Screen
     fun navigateToForgotPassword() {
         navController.navigate("forgotPassword") {
@@ -52,15 +53,12 @@ class NavigationManager(private val navController: NavHostController) {
         }
     }
 
-
-
     // navigate to search screen
-    fun navigateToSearchScreen(){
+    fun navigateToSearchScreen() {
         navController.navigate("search") {
             launchSingleTop = true
         }
     }
-
 
     // Navigate to Login Screen
     fun navigateToLogin() {
@@ -68,16 +66,17 @@ class NavigationManager(private val navController: NavHostController) {
             launchSingleTop = true
         }
     }
-    fun navigateToOTP(email:String){
-        navController.navigate("otp/$email"){
-            launchSingleTop = true
-        }
-    }
 
-    // Go back to the previous screen
+//    fun navigateToOTP(email: String) {
+//        navController.navigate("otp/$email") {
+//            launchSingleTop = true
+//        }
+//    }
+
+        // Go back to the previous screen
     fun goBack() {
-        if (navController.previousBackStackEntry != null) {
-            navController.popBackStack()
+            if (navController.previousBackStackEntry != null) {
+                navController.popBackStack()
+            }
         }
     }
-}

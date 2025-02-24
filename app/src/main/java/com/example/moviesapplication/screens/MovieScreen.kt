@@ -175,5 +175,6 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager) {
 @Composable
 fun MovieDetailScreenPreview() {
     MovieDetailScreen(navigationManager = NavigationManager(rememberNavController()),movie = Movie(
-        id = 1, "Title", "Overview", "posterPath", "releaseDate" , "rating" , "popularity",voteCount= 10))
+        id = 1, "Title", "Overview", "duration", "genre" ,
+        "posterPath" , "releaseDate","vote_average", "popularity", voteCount=10,))
 }
