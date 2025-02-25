@@ -54,18 +54,22 @@ import com.example.moviesapplication.data.Movie
 import com.google.firebase.auth.FirebaseAuth
 import kotlin.math.max
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: NavigationManager,
-               auth: FirebaseAuth) {
+fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: NavigationManager, auth: FirebaseAuth) {
+
     val latestMovies = viewModel.latestMovies
     val upcomingMovies = viewModel.upcomingMovies
+    var query by remember { mutableStateOf("") } // Search query
+    var selectedGenre by remember { mutableStateOf("All") } // Genre filter
 
-    var query by remember { mutableStateOf("") } // State for search query
-    val filteredMovies = (latestMovies + upcomingMovies).filter {
-        it.title.contains(query, ignoreCase = true)
+    val scrollState = rememberLazyListState()
+    val isScrolled by remember { derivedStateOf { scrollState.firstVisibleItemIndex > 0 } }
+
+    // Filtered movies based on search and selected genre
+    val filteredMovies = (latestMovies + upcomingMovies).filter { movie ->
+        movie.title.contains(query, ignoreCase = true) &&
+                (selectedGenre == "All" || movie.genre?.contains(selectedGenre, ignoreCase = true) == true)
     }
 
     Scaffold(
@@ -76,73 +80,88 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color(0xFF1F1D2B)) // Match background color
+                .background(Color(0xFF1F1D2B))
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                // Show the logged-in user's email
-                val currentUser = auth.currentUser
-                val userName = currentUser?.displayName ?: "Guest"
-
-                Text(
-                    text = "Welcome, $userName",
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-                Text(
-                    text = "Let's stream your favorite movie",
-                    style = MaterialTheme.typography.titleMedium.copy(color = Color.LightGray)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Search Bar
-                OutlinedTextField(
-                    value = query,
-                    onValueChange = { query = it },
+                // Top Section (Shrinks when scrolling)
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFF2A2935)), // Darker background
-                    placeholder = {
-                        Text("Search a title", color = Color.Gray)
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search",
-                            tint = Color.Gray
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color(0xFF2A2935),
-                        unfocusedContainerColor = Color(0xFF2A2935),
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
-                    )
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                        .padding(bottom = if (isScrolled) 16.dp else 24.dp)
+                        .scale(if (isScrolled) 0.9f else 1f) // Shrinks when scrolling
+                ) {
+                    val currentUser = auth.currentUser
+                    val userName = currentUser?.displayName ?: "Guest"
 
-                // Categories Section
-                Text(
-                    text = "Categories",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
+                    Text(
+                        text = "Welcome, $userName",
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyRow {
-                    items(listOf("All", "Comedy", "Animation", "Documentary", "Dramas")) { category ->
-                        CategoryChip(category = category)
+                    Text(
+                        text = "Let's stream your favorite movie",
+                        style = MaterialTheme.typography.titleMedium.copy(color = Color.LightGray)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Search Bar
+                    OutlinedTextField(
+                        value = query,
+                        onValueChange = { query = it },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color(0xFF2A2935)),
+                        placeholder = {
+                            Text("Search a title", color = Color.Gray)
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search",
+                                tint = Color.Gray
+                            )
+                        },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color(0xFF2A2935),
+                            unfocusedContainerColor = Color(0xFF2A2935),
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Categories Section
+                    Text(
+                        text = "Categories",
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    LazyRow {
+                        items(listOf("All", "Comedy", "Animation", "Documentary", "Dramas", "Science Fiction",
+                            "Romance", "Family", "Thriller", "Crime", "Adventure", "Horror")) { category ->
+                            CategoryChip(
+                                category = category,
+                                isSelected = category == selectedGenre,
+                                onClick = { selectedGenre = category }
+                            )
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                Spacer(modifier = Modifier.height(16.dp))
 
                 // Most Popular Section
                 Text(
@@ -156,6 +175,7 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
 
                 // Display filtered movies instead of all movies
                 LazyColumn(
+                    state = scrollState,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(filteredMovies) { movie ->
@@ -169,15 +189,14 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
     }
 }
 
-
 @Composable
-fun CategoryChip(category: String) {
+fun CategoryChip(category: String, isSelected: Boolean, onClick: () -> Unit) {
     Surface(
         modifier = Modifier
             .padding(end = 8.dp)
             .clip(RoundedCornerShape(16.dp))
-            .clickable { },
-        color = Color(0xFF1E88E5)
+            .clickable { onClick() },
+        color = if (isSelected) Color(0xFF4CAF50) else Color(0xFF1E88E5)
     ) {
         Text(
             text = category,
@@ -190,7 +209,8 @@ fun CategoryChip(category: String) {
 }
 
 @Composable
-fun MovieItem(movie: Movie, onClick: () -> Unit) {
+fun MovieItem(movie: Movie, onClick: () -> Unit)
+{
     val title = movie.title ?: "Unknown Title"
 
     Card(
@@ -213,9 +233,9 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
                 painter = rememberAsyncImagePainter(movie.getPosterUrl()),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(120.dp) // Fixed size for consistency
+                    .size(120.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillBounds
             )
 
             Column(
@@ -231,13 +251,14 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+                //year
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ){
                     Icon(
                         imageVector = Icons.Default.CalendarMonth,
-                        contentDescription = "Rating",
+                        contentDescription = "Year",
                         tint = Color(0xFF66BB6A),
                         modifier = Modifier.size(20.dp)
                     )
@@ -264,8 +285,8 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
 
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${movie.genre?: "Unknown"}",
-//                            ?.take(8)
+                        text = "${movie.genre?.take(7) ?: "Unknown"}",
+//
                         style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
                     )
                 }
@@ -313,7 +334,8 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
 }
 
 @Composable
-fun BottomNavigationBar(navigationManager: NavigationManager, modifier: Modifier = Modifier) {
+fun BottomNavigationBar(navigationManager: NavigationManager, modifier: Modifier = Modifier)
+{
     var selectedItem by remember { mutableStateOf(0) }
 
     val items = listOf(
@@ -373,12 +395,11 @@ fun BottomNavigationBar(navigationManager: NavigationManager, modifier: Modifier
     }
 }
 
-
-
 data class BottomNavItem(val label: String, val icon: ImageVector)
 
 @Composable
-fun MainScreenWithBottomNav(auth: FirebaseAuth) { // Pass auth as a parameter
+fun MainScreenWithBottomNav(auth: FirebaseAuth)
+{
     val navController = rememberNavController()
     val navigationManager = remember { NavigationManager(navController) }
 
