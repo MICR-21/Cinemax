@@ -11,10 +11,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -227,33 +231,82 @@ fun MovieItem(movie: Movie, onClick: () -> Unit) {
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    Icon(
+                        imageVector = Icons.Default.CalendarMonth,
+                        contentDescription = "Rating",
+                        tint = Color(0xFF66BB6A),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
 
-                Text(
-                    text = "Year: ${movie.releaseDate?.take(4) ?: "Unknown"}",
-                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
-                )
+                    Text(
+                        text = "${movie.releaseDate?.take(4) ?: "Unknown"}",
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
+                    )
+                }
+                Spacer(modifier = Modifier.height(3.dp))
 
-                Text(
-                    text = "Popularity: ${movie.popularity?: "Unknown"}",
-                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
-                )
+                //genre
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    Icon(
+                        imageVector = Icons.Default.Movie,
+                        contentDescription = "Genre",
+                        tint = Color(0xFFEF5350),
+                        modifier = Modifier.size(20.dp)
+                    )
 
-                Text(
-                    text = "Vote Count: ${movie.voteCount?: "Unknown"}",
-                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
-                )
-                Text(
-                    text = "Genre: ${movie.genre?: "Unknown"}",
-                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
-                )
-                Text(
-                    text = "Duration: ${movie.duration?: "Unknown"}",
-                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
-                )
-                Text(
-                    text = "Rating: ${movie.rating?: "Unknown"}",
-                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
-                )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "${movie.genre?: "Unknown"}",
+//                            ?.take(8)
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
+                    )
+                }
+                Spacer(modifier = Modifier.height(3.dp))
+
+                //duration
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Timer,
+                        contentDescription = "Duration",
+                        tint = Color(0xFF1E88E5),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "${movie.duration ?: "Unknown"}",
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
+                    )
+                }
+                Spacer(modifier = Modifier.height(3.dp))
+
+                //rating
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Rating",
+                        tint = Color(0xFFFFC107),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "${movie.rating ?: "Unknown"}",
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
+                    )
+                }
             }
         }
     }
