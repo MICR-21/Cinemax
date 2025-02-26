@@ -100,7 +100,6 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
                 ) {
                     val currentUser = auth.currentUser
                     val userName = currentUser?.displayName ?: "Guest"
-
                     Text(
                         text = "Welcome, $userName",
                         style = MaterialTheme.typography.titleLarge
@@ -435,7 +434,6 @@ fun MainScreenWithBottomNav(auth: FirebaseAuth) {
                     SearchScreen(
                         viewModel = viewModel(),
                         navigationManager = navigationManager,
-                        auth = auth,
                         onItemSelected = onItemSelected
                     )
                 }

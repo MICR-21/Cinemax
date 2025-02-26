@@ -69,7 +69,7 @@ fun MovieApp2(auth: FirebaseAuth, viewModel: MovieViewModel = viewModel(), onIte
         }
         composable("forgotPassword"){ ResetPasswordScreen(navigationManager = navigationManager)}
 
-        composable("search"){ SearchScreen(viewModel = viewModel(), navigationManager = navigationManager, auth = auth,
+        composable("search"){ SearchScreen(viewModel = viewModel(), navigationManager = navigationManager,
                 onItemSelected = onItemSelected
             )
         }
