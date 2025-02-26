@@ -27,6 +27,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,25 +57,28 @@ import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: NavigationManager, auth: FirebaseAuth) {
-
+fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: NavigationManager,
+    auth: FirebaseAuth,
+    onItemSelected: (Int) -> Unit // Pass this function
+) {
     val latestMovies = viewModel.latestMovies
     val upcomingMovies = viewModel.upcomingMovies
-    var query by remember { mutableStateOf("") } // Search query
-    var selectedGenre by remember { mutableStateOf("All") } // Genre filter
+    var query by remember { mutableStateOf("") }
+    var selectedGenre by remember { mutableStateOf("All") }
 
     val scrollState = rememberLazyListState()
     val isScrolled by remember { derivedStateOf { scrollState.firstVisibleItemIndex > 0 } }
 
-    // Filtered movies based on search and selected genre
     val filteredMovies = (latestMovies + upcomingMovies).filter { movie ->
         movie.title.contains(query, ignoreCase = true) &&
                 (selectedGenre == "All" || movie.genre?.contains(selectedGenre, ignoreCase = true) == true)
     }
 
     Scaffold(
-        bottomBar = { BottomNavigationBar(navigationManager = navigationManager) },
-        containerColor = Color(0xFF1F1D2B) // Dark background
+        bottomBar = {
+            BottomNavigationBar(navigationManager, selectedItem = 0, onItemSelected = onItemSelected)
+        },
+        containerColor = Color(0xFF1F1D2B)
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -99,7 +103,8 @@ fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: Navig
 
                     Text(
                         text = "Welcome, $userName",
-                        style = MaterialTheme.typography.headlineMedium.copy(
+                        style = MaterialTheme.typography.titleLarge
+                        .copy(
                             color = Color.White,
                             fontWeight = FontWeight.Bold
                         )
@@ -285,7 +290,7 @@ fun MovieItem(movie: Movie, onClick: () -> Unit)
 
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${movie.genre?.take(7) ?: "Unknown"}",
+                        text = "${movie.genre ?: "Unknown"}",
 //
                         style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
                     )
@@ -334,22 +339,19 @@ fun MovieItem(movie: Movie, onClick: () -> Unit)
 }
 
 @Composable
-fun BottomNavigationBar(navigationManager: NavigationManager, modifier: Modifier = Modifier)
+fun BottomNavigationBar(navigationManager: NavigationManager,
+                        selectedItem: Int,
+                        onItemSelected: (Int) -> Unit)
 {
-    var selectedItem by remember { mutableStateOf(0) }
-
     val items = listOf(
-        BottomNavItem("Home", Icons.Filled.Home),
-        BottomNavItem("Search", Icons.Filled.Search),
-        BottomNavItem("Downloads", Icons.Filled.PlayArrow),
-        BottomNavItem("Profile", Icons.Filled.Person)
+        BottomNavItem("Home", Icons.Filled.Home), //index 0
+        BottomNavItem("Search", Icons.Filled.Search), // index 1
+        BottomNavItem("Downloads", Icons.Filled.PlayArrow), // index 2
+        BottomNavItem("Profile", Icons.Filled.Person) //index 3
     )
 
     NavigationBar(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(90.dp)
-            .background(Color(0xFF1F1D2B)), // Dark background
+        modifier = Modifier.fillMaxWidth().height(90.dp),
         containerColor = Color.Transparent,
         contentColor = Color.White
     ) {
@@ -357,19 +359,17 @@ fun BottomNavigationBar(navigationManager: NavigationManager, modifier: Modifier
             NavigationBarItem(
                 selected = selectedItem == index,
                 onClick = {
-                    selectedItem = index
+                    onItemSelected(index) // Updates state
                     when (item.label) {
-                        "Profile" -> navigationManager.navigateToProfileScreen() // ✅ Navigate to Profile Screen
-                        "Home" -> navigationManager.navigateToHomeScreen() // ✅ Add Home navigation
-//                        "Search" -> navigationManager.navigateToSearchScreen() // ✅ Add Search navigation
-//                        "Downloads" -> navigationManager.navigateToDownloadsScreen() // ✅ Add Downloads navigation
+                        "Home" -> navigationManager.navigateToHomeScreen()
+                        "Search" -> navigationManager.navigateToSearchScreen()
+                        "Profile" -> navigationManager.navigateToProfileScreen()
+//                        "Downloads" -> navigationManager.navigateToDownloadsScreen()
                     }
                 },
                 icon = {
                     Box(
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clip(RoundedCornerShape(16.dp))
+                        modifier = Modifier.size(30.dp).clip(RoundedCornerShape(16.dp))
                             .background(if (selectedItem == index) Color(0xFF00BCD4) else Color.Transparent),
                         contentAlignment = Alignment.Center
                     ) {
@@ -396,57 +396,51 @@ fun BottomNavigationBar(navigationManager: NavigationManager, modifier: Modifier
 }
 
 data class BottomNavItem(val label: String, val icon: ImageVector)
-
 @Composable
-fun MainScreenWithBottomNav(auth: FirebaseAuth)
-{
+fun MainScreenWithBottomNav(auth: FirebaseAuth) {
     val navController = rememberNavController()
     val navigationManager = remember { NavigationManager(navController) }
 
+    var selectedItem by rememberSaveable { mutableStateOf(0) } // Keeps track of selected tab
+
+    val onItemSelected: (Int) -> Unit = { index ->
+        selectedItem = index
+    }
+
     Scaffold(
-        bottomBar = { BottomNavigationBar(navigationManager = navigationManager) }
+        bottomBar = { BottomNavigationBar(navigationManager, selectedItem, onItemSelected) }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            NavHost(navController, startDestination = "login") {
+            NavHost(navController, startDestination = "HomeScreen") {
                 composable("HomeScreen") {
+                    onItemSelected(0) // Set Home as selected
                     HomeScreen(
                         viewModel = viewModel(),
                         navigationManager = navigationManager,
-                        auth = auth
+                        auth = auth,
+                        onItemSelected = onItemSelected
                     )
                 }
-                composable("SignUp") {
-                    SignUpScreen(
+                composable("profileScreen") {
+                    onItemSelected(3) // Set Profile as selected
+                    ProfileScreen(
+                        auth = auth,
                         navigationManager = navigationManager,
-                        auth = auth // Pass auth here
+                        onItemSelected = onItemSelected
                     )
                 }
-                composable("login") {
-                    LoginScreen(
+
+                composable("search"){
+                    onItemSelected(1) // Set Search as selected
+                    SearchScreen(
+                        viewModel = viewModel(),
                         navigationManager = navigationManager,
-                        auth = auth // Pass auth here
+                        auth = auth,
+                        onItemSelected = onItemSelected
                     )
                 }
-                composable("profileScreen")
-                { ProfileScreen(auth = auth, navigationManager = navigationManager) }
-
-                composable("forgotPassword"){ ResetPasswordScreen(
-                    navigationManager = navigationManager
-                )}
-//                composable("otp/{email}") { backStackEntry ->
-//                    val email = backStackEntry.arguments?.getString("email") ?: ""
-//                    VerificationScreen(navigationManager, email)
-//                }
-
             }
         }
     }
 }
 
-
-@Preview
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(viewModel = viewModel(), navigationManager = NavigationManager(rememberNavController()),
-        auth = FirebaseAuth.getInstance())
-}

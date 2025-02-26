@@ -3,6 +3,7 @@ package com.example.moviesapplication.screens
 import NavigationManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,9 +48,9 @@ import com.example.moviesapplication.data.Movie
 import com.google.android.play.core.integrity.n
 
 @Composable
-fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager) {
+fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,selectedItem: Int, onItemSelected: (Int) -> Unit) {
     Scaffold(
-        bottomBar = { BottomNavigationBar(navigationManager = navigationManager) },
+        bottomBar = { BottomNavigationBar(navigationManager = navigationManager,selectedItem, onItemSelected) },
         containerColor = Color(0xFF1F1D2B)
     ) { paddingValues ->
         Box(
@@ -58,6 +59,7 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager) {
                 .background(Color(0xFF1F1D2B)) // Dark background
                 .padding(paddingValues)
         ) {
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
@@ -202,13 +204,4 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager) {
 
     }
 
-}
-
-
-@Preview
-@Composable
-fun MovieDetailScreenPreview() {
-    MovieDetailScreen(navigationManager = NavigationManager(rememberNavController()),movie = Movie(
-        id = 1, "Title", "Overview", "duration", "genre" ,
-        "posterPath" , "releaseDate","vote_average", "popularity", voteCount=10,))
 }

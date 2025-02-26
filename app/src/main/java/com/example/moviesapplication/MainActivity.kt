@@ -20,7 +20,7 @@ import com.example.moviesapplication.screens.MovieDetailScreen
 import com.example.moviesapplication.screens.OnboardingScreen
 import com.example.moviesapplication.screens.ProfileScreen
 import com.example.moviesapplication.screens.ResetPasswordScreen
-//import com.example.moviesapplication.screens.ProfileScreenpreview
+import com.example.moviesapplication.screens.SearchScreen
 import com.example.moviesapplication.screens.SignUpScreen
 import com.example.moviesapplication.screens.VerificationScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         auth = FirebaseAuth.getInstance()  // Initialize FirebaseAuth
         enableEdgeToEdge()
         setContent {
-            MovieApp2(auth)
+            MovieApp2(auth, onItemSelected ={})
             Coil.setImageLoader(
                 ImageLoader.Builder(this)
                     .logger(DebugLogger()) // Enable debug logs
@@ -44,18 +44,35 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MovieApp2(auth: FirebaseAuth, viewModel: MovieViewModel = viewModel()) {
+fun MovieApp2(auth: FirebaseAuth, viewModel: MovieViewModel = viewModel(), onItemSelected: (Int) -> Unit) {
     val navController = rememberNavController()
     val navigationManager = remember { NavigationManager(navController) }
 
+
     NavHost(navController, startDestination = "login") {  // Start with Login screen
-        composable("onboarding") { OnboardingScreen(navigationManager = navigationManager) }
-        composable("HomeScreen") { HomeScreen(viewModel = viewModel, navigationManager = navigationManager,auth) }
-        composable("SignUp") { SignUpScreen(navigationManager = navigationManager, auth) }
-        composable("login") { LoginScreen(navigationManager = navigationManager, auth ) }
-        composable("profileScreen"){ ProfileScreen(navigationManager = navigationManager, auth = auth)}
+        composable("onboarding") {
+            OnboardingScreen(navigationManager = navigationManager) }
+
+        composable("HomeScreen") {
+            HomeScreen(
+                viewModel = viewModel, navigationManager = navigationManager, auth = auth,
+                onItemSelected = onItemSelected ) }
+
+        composable("SignUp") {
+            SignUpScreen(navigationManager = navigationManager, auth) }
+
+        composable("login") {
+            LoginScreen(navigationManager = navigationManager, auth ) }
+
+        composable("profileScreen"){
+            ProfileScreen(navigationManager = navigationManager, auth = auth,onItemSelected = onItemSelected )
+        }
         composable("forgotPassword"){ ResetPasswordScreen(navigationManager = navigationManager)}
-//        composable("search"){}
+
+        composable("search"){ SearchScreen(viewModel = viewModel(), navigationManager = navigationManager, auth = auth,
+                onItemSelected = onItemSelected
+            )
+        }
         composable("detail/{movieId}") { backStackEntry ->
             val movieId = backStackEntry.arguments?.getString("movieId")?.toIntOrNull()
             val movie = movieId?.let {
@@ -63,7 +80,7 @@ fun MovieApp2(auth: FirebaseAuth, viewModel: MovieViewModel = viewModel()) {
                     ?: viewModel.upcomingMovies.find { it.id == movieId }
             }
             if (movie != null) {
-                MovieDetailScreen(movie = movie, navigationManager = navigationManager)
+                MovieDetailScreen(movie = movie, navigationManager = navigationManager,selectedItem = 0 ,onItemSelected = onItemSelected)
             }
         }
         composable("otp/{email}") { backStackEntry ->

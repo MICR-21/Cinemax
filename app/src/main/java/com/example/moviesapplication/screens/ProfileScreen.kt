@@ -31,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,18 +48,19 @@ import com.example.moviesapplication.R
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun ProfileScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
+fun ProfileScreen(navigationManager: NavigationManager, auth: FirebaseAuth, onItemSelected: (Int) -> Unit) {
+    LaunchedEffect(Unit) { onItemSelected(3) } // Ensure Profile tab is selected when screen loads
+
     Scaffold(
-        bottomBar = { BottomNavigationBar(navigationManager = navigationManager) },
+        bottomBar = { BottomNavigationBar(navigationManager, selectedItem = 3, onItemSelected = onItemSelected) },
         containerColor = Color((0xFF141622))
-    )
-    {paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF1F1D2B))
                 .padding(paddingValues)
-        ) {
+        ){
             val currentUser = auth.currentUser
             val userName = currentUser?.displayName ?: "Guest"
             val userEmail = currentUser?.email ?: "No email available"
@@ -143,8 +145,6 @@ fun ProfileScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
                 Spacer(modifier = Modifier.height(30.dp))
 
             }
-            // Bottom Navigation Bar
-            BottomNavigationBar(navigationManager,Modifier )
         }
     }
 

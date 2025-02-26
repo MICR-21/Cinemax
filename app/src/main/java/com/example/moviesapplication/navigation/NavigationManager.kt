@@ -67,11 +67,6 @@ class NavigationManager(private val navController: NavHostController) {
         }
     }
 
-//    fun navigateToOTP(email: String) {
-//        navController.navigate("otp/$email") {
-//            launchSingleTop = true
-//        }
-//    }
 
         // Go back to the previous screen
     fun goBack() {
