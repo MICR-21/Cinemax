@@ -36,7 +36,6 @@ fun SearchScreen(
     val filteredMovies = (latestMovies + upcomingMovies).filter { movie ->
         movie.title.contains(query, ignoreCase = true) &&
                 (selectedGenre == "All" || movie.genre ?. contains(selectedGenre, ignoreCase = true) == true)
-
     }
 
     Scaffold(

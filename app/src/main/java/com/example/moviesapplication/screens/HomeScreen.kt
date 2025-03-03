@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Person
@@ -345,7 +346,7 @@ fun BottomNavigationBar(navigationManager: NavigationManager,
     val items = listOf(
         BottomNavItem("Home", Icons.Filled.Home), //index 0
         BottomNavItem("Search", Icons.Filled.Search), // index 1
-        BottomNavItem("Downloads", Icons.Filled.PlayArrow), // index 2
+        BottomNavItem("Downloads", Icons.Filled.Download), // index 2
         BottomNavItem("Profile", Icons.Filled.Person) //index 3
     )
 
@@ -369,7 +370,7 @@ fun BottomNavigationBar(navigationManager: NavigationManager,
                 icon = {
                     Box(
                         modifier = Modifier.size(30.dp).clip(RoundedCornerShape(16.dp))
-                            .background(if (selectedItem == index) Color(0xFF00BCD4) else Color.Transparent),
+                            .background(if (selectedItem == index) Color(0xFF00E5FF) else Color.Transparent),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -381,7 +382,7 @@ fun BottomNavigationBar(navigationManager: NavigationManager,
                 },
                 label = {
                     if (selectedItem == index) {
-                        Text(text = item.label, color = Color(0xFF00BCD4))
+                        Text(text = item.label, fontSize = 16.sp ,color = Color(0xFF00E5FF))
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(

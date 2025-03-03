@@ -19,36 +19,41 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.LocalMovies
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.example.moviesapplication.R
 import com.example.moviesapplication.data.Movie
-import com.google.android.play.core.integrity.n
 
 @Composable
-fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,selectedItem: Int, onItemSelected: (Int) -> Unit) {
+fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,
+                      selectedItem: Int, onItemSelected: (Int) -> Unit) {
+    var showShareDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         bottomBar = { BottomNavigationBar(navigationManager = navigationManager,selectedItem, onItemSelected) },
         containerColor = Color(0xFF1F1D2B)
@@ -56,107 +61,157 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,selecte
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF1F1D2B)) // Dark background
+                .background(Color(0xFF1F1D2B))
                 .padding(paddingValues)
         ) {
-
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { navigationManager.goBack() }
+                ) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(138.dp))
+                }
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Row {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = movie.title,
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
                 Image(
                     painter = rememberAsyncImagePainter(movie.getPosterUrl()),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(300.dp)
-                        .padding(top = 40.dp)
+                        .padding(top = 20.dp)
                         .clip(RoundedCornerShape(12.dp))
-//
                 )
-
                 Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = movie.title,
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    ),
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "Rating",
-                        tint = Color(0xFFFFC107),
+                        imageVector = Icons.Default.Timer,
+                        contentDescription = "Duration",
+                        tint = Color(0xFF1E88E5),
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = movie.rating ?: "N/A",
+                        text = "${movie.duration ?: "N/A"} | ",
                         style = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Row{
-                        Icon(
-                            imageVector = Icons.Default.CalendarMonth,
-                            contentDescription = "releaseDate",
-                            tint = Color(0xFF66BB6A),
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "${ movie.releaseDate?.take(4) } | ",
-                            style = MaterialTheme.typography.bodyLarge.copy(color = Color.Gray)
-                        )
-                    }
-                    Row{
-                        Icon(
-                            imageVector = Icons.Default.LocalMovies,
-                            contentDescription = "Movie",
-                            tint = Color(0xFF1E88E5),
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "${movie.genre?.take(8)} ",
-                            style = MaterialTheme.typography.bodyLarge.copy(color = Color.Gray)
-                        )
-                    }
+
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        imageVector = Icons.Default.CalendarMonth,
+                        contentDescription = "releaseDate",
+                        tint = Color(0xFF66BB6A),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "${movie.releaseDate?.take(4)} | ",
+                        style = MaterialTheme.typography.bodyLarge.copy(color = Color.Gray)
+                    )
+
+                    Icon(
+                        imageVector = Icons.Default.LocalMovies,
+                        contentDescription = "Movie",
+                        tint = Color(0xFF1E88E5),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "${movie.genre?.take(8)} ",
+                        style = MaterialTheme.typography.bodyLarge.copy(color = Color.Gray)
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
-                    onClick = {},
-                    modifier = Modifier
-                        .fillMaxWidth(0.7f)
-                        .height(50.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Play",
-                        tint = Color.White
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Play",
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                        color = Color.White
-                    )
-                }
+                    // PLAY BUTTON
+                    Button(
+                        onClick = {},
+                        modifier = Modifier
+                            .fillMaxWidth(0.28f)
+                            .height(50.dp),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
+                    ) {
+                        Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play", tint = Color.White)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Play", style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold), color = Color.White)
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
 
+                    //DONWLOAD BUTTON
+                    Button(
+                        onClick = {
+//                            navigationManager.navigateToDownloadScreen(movie)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(0.21f)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF252836))
+                    ) {
+                        Icon(imageVector = Icons.Default.Download, contentDescription = "Download", tint = Color(0xFFFF9800))
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    //SHARE BUTTON
+                    Button(
+                        onClick = { showShareDialog = true },
+                        modifier = Modifier
+                            .fillMaxWidth(0.27f)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF252836))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = "Share",
+                            tint = Color(0xFF12CDD9),
+
+                            )
+                    }
+                }
                 Spacer(modifier = Modifier.height(24.dp))
 
+                    // STORY LINE
                 Text(
                     text = "Story Line",
                     style = MaterialTheme.typography.headlineSmall.copy(
@@ -164,44 +219,78 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,selecte
                         color = Color.White
                     )
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
+                Spacer(modifier = Modifier.height(18.dp))
                 Text(
                     text = movie.overview,
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.LightGray),
+                    style = MaterialTheme.typography.bodyLarge
+                        .copy(color = Color.LightGray),
                     textAlign = TextAlign.Justify,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
-                Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
-                    onClick = {
-                        navigationManager.goBack()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.7f)
-                        .height(50.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9C27B0))
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Back",
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                        color = Color.White
+                //SHARE ICON
+
+                if (showShareDialog) {
+                    AlertDialog(
+                        containerColor = Color(0xFF252836),
+                        onDismissRequest = { showShareDialog = false },
+                        title = {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ){
+                                Text(
+                                    text = "Share to",
+                                    style = MaterialTheme.typography.headlineSmall.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                )
+                            }
+                        }
+                        ,
+                        text = {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                            ) {
+                                IconButton(onClick = { /* Share to Facebook */ }) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.facebookshare),
+                                        contentDescription = "Facebook",
+                                        modifier = Modifier.size(90.dp),
+                                    )
+                                }
+                                IconButton(onClick = { /* Share to Messenger */ }) {
+                                    Image(painter = painterResource(id = R.drawable.messageshare),
+                                        contentDescription = "Messenger",
+                                        modifier = Modifier.size(90.dp)
+                                    )
+                                }
+                                IconButton(onClick = { /* Share to Telegram */ }) {
+                                    Image(painter = painterResource(id = R.drawable.telegramshare),
+                                        contentDescription = "Telegram",
+                                        modifier = Modifier.size(90.dp)
+                                    )
+                                }
+                            }
+                        },
+                        confirmButton = {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ){
+                                Button(
+                                    onClick = { showShareDialog = false }) {
+                                    Text("Close")
+                                }
+                            }
+                        }
                     )
                 }
-
-
             }
         }
-
     }
-
 }
+
+
