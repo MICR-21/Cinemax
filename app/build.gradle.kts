@@ -90,17 +90,19 @@ dependencies {
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.androidx.espresso.core)
 
+    implementation (libs.androidx.compose.runtime.runtime)
+
+    implementation (libs.kotlinx.coroutines.android)
+
     implementation(libs.androidx.compose.material.material.icons.extended)
     implementation(libs.androidx.ui.v160)
     implementation(libs.androidx.material3.v120)
 
+    implementation (libs.core)
+
     implementation(libs.firebase.database)
     implementation ("com.google.firebase:firebase-auth-ktx:22.3.1")
     implementation (libs.play.services.auth)
-
-
-
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

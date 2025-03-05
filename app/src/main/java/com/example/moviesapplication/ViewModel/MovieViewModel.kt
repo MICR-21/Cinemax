@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviesapplication.BuildConfig
 import com.example.moviesapplication.data.Movie
+import com.example.moviesapplication.data.Trailer
 import com.example.moviesapplication.interfaces.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
+
 import kotlinx.coroutines.launch
 
 class MovieViewModel : ViewModel() {
@@ -21,6 +23,9 @@ class MovieViewModel : ViewModel() {
 
     private val _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean> get() = _isLoading
+
+    private val _movieTrailers = mutableStateOf<List<Trailer>>(emptyList())
+    val movieTrailers: State<List<Trailer>> get() = _movieTrailers
 
     init {
         fetchMovies()
@@ -50,9 +55,6 @@ class MovieViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Fetch additional details (duration & genre) for each movie.
-     */
     private suspend fun fetchMoviesWithDetails(movies: List<Movie>): List<Movie> {
         return movies.map { movie ->
             try {
@@ -64,6 +66,20 @@ class MovieViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("MovieViewModel", "Error fetching details for movie ${movie.id}", e)
                 movie // Return the original movie object if details fetch fails
+            }
+        }
+    }
+
+    fun fetchMovieTrailers(movieId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = RetrofitInstance.api.getMovieTrailers(movieId, BuildConfig.API_KEY)
+                val filteredTrailers = response.results.filter { it.site == "YouTube" && it.type == "Trailer" }
+                Log.d("MovieViewModel", "Fetched trailers for movie $movieId: $filteredTrailers")
+                _movieTrailers.value = filteredTrailers
+            } catch (e: Exception) {
+                Log.e("MovieViewModel", "Error fetching trailers for movie $movieId", e)
+                _movieTrailers.value = emptyList()
             }
         }
     }

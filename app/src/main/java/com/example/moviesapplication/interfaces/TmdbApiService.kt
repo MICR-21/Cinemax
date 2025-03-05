@@ -1,6 +1,7 @@
 package com.example.moviesapplication.interfaces
 
 import com.example.moviesapplication.data.MovieResponse
+import com.example.moviesapplication.data.TrailerResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -18,4 +19,10 @@ interface TmdbApiService {
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String
     ): MovieResponse
+
+    @GET("movie/{movie_id}/videos")
+    suspend fun getMovieTrailers(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String
+    ): TrailerResponse
 }
