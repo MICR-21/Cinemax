@@ -94,25 +94,4 @@ fun SearchScreen(
 }
 
 
-//@Composable
-//fun NoResultsScreen() {
-//    Column(
-//        modifier = Modifier.fillMaxSize(),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        Image(painter = painterResource(id = R.drawable.noresults), contentDescription = "No results")
-//        Text(
-//            text = "We Are Sorry, We Can Not Find The Movie :(",
-//            color = Color.White,
-//            textAlign = TextAlign.Center,
-//            style = MaterialTheme.typography.bodyLarge
-//        )
-//        Text(
-//            text = "Find your movie by Type title, categories, years, etc",
-//            color = Color.Gray,
-//            textAlign = TextAlign.Center,
-//            style = MaterialTheme.typography.bodyMedium
-//        )
-//    }
-//}
+
