@@ -552,4 +552,3 @@ fun MainScreenWithBottomNav(auth: FirebaseAuth) {
         }
     }
 }
-
