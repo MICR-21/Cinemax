@@ -71,7 +71,9 @@ fun SignUpScreen(navigationManager: NavigationManager, auth: FirebaseAuth) {
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(painter = painterResource(id = R.drawable.popcornapp), contentDescription = "App Icon", modifier = Modifier.size(100.dp))
+            Image(painter = painterResource(id = R.drawable.popcornapp), contentDescription = "App Icon",
+                modifier = Modifier.size(100.dp).background(Color(0xFF1F1D2B))
+            )
             Spacer(modifier = Modifier.height(46.dp))
             Text("CINEMAX", fontSize = 34.sp, fontWeight = FontWeight.Bold, color = Color.White)
             Spacer(modifier = Modifier.height(20.dp))

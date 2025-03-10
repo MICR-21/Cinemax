@@ -1,4 +1,5 @@
 package com.example.moviesapplication
+
 import NavigationManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,11 +14,13 @@ import androidx.navigation.compose.rememberNavController
 import coil.Coil
 import coil.ImageLoader
 import coil.util.DebugLogger
+import com.example.moviesapp.ui.screens.PaymentScreen
 import com.example.moviesapplication.ViewModel.MovieViewModel
 import com.example.moviesapplication.screens.HomeScreen
 import com.example.moviesapplication.screens.LoginScreen
 import com.example.moviesapplication.screens.MovieDetailScreen
 import com.example.moviesapplication.screens.OnboardingScreen
+//import com.example.moviesapplication.screens.PaymentScreen
 import com.example.moviesapplication.screens.ProfileScreen
 import com.example.moviesapplication.screens.ResetPasswordScreen
 import com.example.moviesapplication.screens.SearchScreen
@@ -73,6 +76,9 @@ fun MovieApp2(auth: FirebaseAuth, viewModel: MovieViewModel = viewModel(), onIte
                 onItemSelected = onItemSelected
             )
         }
+
+        composable("payment"){ PaymentScreen(viewModel = viewModel(), navigationManager = navigationManager) }
+
         composable("detail/{movieId}") { backStackEntry ->
             val movieId = backStackEntry.arguments?.getString("movieId")?.toIntOrNull()
             val movie = movieId?.let {

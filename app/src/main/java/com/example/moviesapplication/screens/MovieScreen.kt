@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.LocalMovies
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -84,6 +85,9 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(138.dp))
+//                    Icon(
+//                        imageVector = Icons.Default.Hear
+//                    )
                 }
 
                 Column(
@@ -183,12 +187,17 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,
 //                            navigationManager.navigateToDownloadScreen(movie)
                         },
                         modifier = Modifier
-                            .fillMaxWidth(0.21f)
+                            .fillMaxWidth(0.28f)
                             .height(40.dp),
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF252836))
                     ) {
-                        Icon(imageVector = Icons.Default.Download, contentDescription = "Download", tint = Color(0xFFFF9800))
+                        Icon(
+                            imageVector = Icons.Default.Download,
+                            contentDescription = "Download",
+                            tint = Color(0xFFFF9800)
+
+                        )
                     }
                     Spacer(modifier = Modifier.width(10.dp))
 
@@ -196,7 +205,7 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,
                     Button(
                         onClick = { showShareDialog = true },
                         modifier = Modifier
-                            .fillMaxWidth(0.27f)
+                            .fillMaxWidth(0.40f)
                             .height(40.dp),
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF252836))
@@ -208,6 +217,36 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,
 
                             )
                     }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+
+
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = {},
+                        modifier = Modifier
+                            .fillMaxWidth(0.25f)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF252836))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = "Rating",
+                            tint = Color(0xFFFF9800),
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = movie.rating ?.take(3) ?: "Unknown",
+                            style = MaterialTheme.typography.titleLarge.copy(color = Color(0xFFFF9800))
+                        )
+                    }
+
                 }
                 Spacer(modifier = Modifier.height(24.dp))
 

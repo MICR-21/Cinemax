@@ -252,7 +252,6 @@ fun UpcomingMoviesCarousel(
     }
 }
 
-
 @Composable
 fun TrailerDialog(trailers: List<Trailer>, onDismiss: () -> Unit) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -295,14 +294,6 @@ fun TrailerDialog(trailers: List<Trailer>, onDismiss: () -> Unit) {
         containerColor = Color(0xFF252836)
     )
 }
-
-
-
-
-
-
-
-
 
 @Composable
 fun CategoryChip(category: String, isSelected: Boolean, onClick: () -> Unit) {

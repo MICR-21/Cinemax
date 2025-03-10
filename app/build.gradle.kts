@@ -103,6 +103,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation ("com.google.firebase:firebase-auth-ktx:22.3.1")
     implementation (libs.play.services.auth)
+    implementation(libs.androidx.appcompat)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

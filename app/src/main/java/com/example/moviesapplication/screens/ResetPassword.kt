@@ -30,7 +30,7 @@ fun ResetPasswordScreen(navigationManager: NavigationManager) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF141321)) // Dark background
+            .background(Color(0xFF1F1D2B)) // Dark background
             .padding(16.dp)
     ) {
         Column(

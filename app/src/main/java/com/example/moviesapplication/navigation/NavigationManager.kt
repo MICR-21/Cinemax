@@ -10,6 +10,13 @@ class NavigationManager(private val navController: NavHostController) {
         }
     }
 
+    //Navigate to Payment
+    fun navigateToPayment(){
+        navController.navigate("payment") {
+            launchSingleTop = true
+        }
+    }
+
     // Navigate to Home Screen
     fun navigateToHomeScreen() {
         navController.navigate("HomeScreen") {

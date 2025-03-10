@@ -22,6 +22,8 @@ import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.MonetizationOn
+import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
@@ -113,6 +115,7 @@ fun ProfileScreen(navigationManager: NavigationManager, auth: FirebaseAuth, onIt
                 SectionHeader("Account")
                 ProfileOption("Member", Icons.Filled.Person, navigationManager)
                 ProfileOption("Change Password", Icons.Filled.Lock, navigationManager)
+                ProfileOption("Payment", Icons.Filled.MonetizationOn, navigationManager)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -172,7 +175,7 @@ fun ProfileOption(label: String, icon: ImageVector, navigationManager: Navigatio
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable { /* Handle Click */
-                navigationManager.navigateToHomeScreen()
+                navigationManager.navigateToPayment()
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
