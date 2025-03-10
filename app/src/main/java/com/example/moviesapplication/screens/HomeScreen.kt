@@ -72,6 +72,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource.Companion.SideEffect
+import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.ViewModel
 import com.example.moviesapplication.data.Trailer
 import kotlinx.coroutines.CoroutineScope
@@ -80,12 +81,8 @@ import androidx.compose.runtime.LaunchedEffect as RuntimeLaunchedEffect
 
 
 @Composable
-fun HomeScreen(
-    viewModel: MovieViewModel = viewModel(),
-    navigationManager: NavigationManager,
-    auth: FirebaseAuth,
-    onItemSelected: (Int) -> Unit
-) {
+fun HomeScreen(viewModel: MovieViewModel = viewModel(), navigationManager: NavigationManager,
+    auth: FirebaseAuth, onItemSelected: (Int) -> Unit) {
     val latestMovies = viewModel.latestMovies
     val upcomingMovies = viewModel.upcomingMovies
     var query by remember { mutableStateOf("") }
@@ -122,11 +119,18 @@ fun HomeScreen(
                         val userName = currentUser?.displayName ?: "Guest"
                         Text(
                             text = "Welcome, $userName",
-                            style = MaterialTheme.typography.titleLarge.copy(color = Color.White, fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.titleLarge
+                                .copy(color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.Serif
+                            )
                         )
                         Text(
                             text = "Let's stream your favorite movie",
-                            style = MaterialTheme.typography.titleMedium.copy(color = Color.LightGray)
+                            style = MaterialTheme.typography
+                                .titleMedium.copy(color = Color.LightGray),
+                            fontFamily = FontFamily.Serif
+
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -155,7 +159,10 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "Upcoming Movies",
-                        style = MaterialTheme.typography.titleLarge.copy(color = Color.White, fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.titleLarge.copy(color = Color.White,
+                            fontWeight = FontWeight.Bold),
+                            fontFamily = FontFamily.Serif
+
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -174,7 +181,10 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "Most Popular",
-                        style = MaterialTheme.typography.titleLarge.copy(color = Color.White, fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.titleLarge.copy
+                            (color = Color.White, fontWeight = FontWeight.Bold),
+                        fontFamily = FontFamily.Serif
+
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
@@ -196,12 +206,9 @@ fun HomeScreen(
 }
 
 @Composable
-fun UpcomingMoviesCarousel(
-    movies: List<Movie>,
-    viewModel: MovieViewModel,
-    navigationManager: NavigationManager,
-    onTrailerClick: (List<Trailer>) -> Unit // <-- Add this
-) {
+fun UpcomingMoviesCarousel(movies: List<Movie>, viewModel: MovieViewModel,
+    navigationManager: NavigationManager, onTrailerClick: (List<Trailer>) -> Unit)
+{
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -241,7 +248,9 @@ fun UpcomingMoviesCarousel(
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = movie.title.take(20),
-                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.White, fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.bodyMedium.copy
+                            (color = Color.White, fontWeight = FontWeight.Bold),
+                        fontFamily = FontFamily.Serif,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(horizontal = 8.dp)
@@ -352,7 +361,9 @@ fun MovieItem(movie: Movie, onClick: () -> Unit)
                     text = title.take(25),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         color = Color.White,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Serif
+
                     ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -372,7 +383,10 @@ fun MovieItem(movie: Movie, onClick: () -> Unit)
 
                     Text(
                         text = "${movie.releaseDate?.take(4) ?: "Unknown"}",
-                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
+                        style = MaterialTheme.typography.bodyMedium.
+                        copy(color = Color.Gray),
+                        fontFamily = FontFamily.Serif
+
                     )
                 }
                 Spacer(modifier = Modifier.height(3.dp))
@@ -392,8 +406,9 @@ fun MovieItem(movie: Movie, onClick: () -> Unit)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${movie.genre ?: "Unknown"}",
-//
-                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
+                        fontFamily = FontFamily.Serif
+
                     )
                 }
                 Spacer(modifier = Modifier.height(3.dp))
@@ -412,7 +427,9 @@ fun MovieItem(movie: Movie, onClick: () -> Unit)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${movie.duration ?: "Unknown"}",
-                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
+                        fontFamily = FontFamily.Serif
+
                     )
                 }
                 Spacer(modifier = Modifier.height(3.dp))
@@ -431,7 +448,9 @@ fun MovieItem(movie: Movie, onClick: () -> Unit)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${movie.rating ?: "Unknown"}",
-                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
+                        fontFamily = FontFamily.Serif
+
                     )
                 }
             }
@@ -440,8 +459,7 @@ fun MovieItem(movie: Movie, onClick: () -> Unit)
 }
 
 @Composable
-fun BottomNavigationBar(navigationManager: NavigationManager,
-                        selectedItem: Int,
+fun BottomNavigationBar(navigationManager: NavigationManager, selectedItem: Int,
                         onItemSelected: (Int) -> Unit)
 {
     val items = listOf(

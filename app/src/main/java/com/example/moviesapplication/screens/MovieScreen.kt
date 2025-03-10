@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,6 +54,8 @@ import com.example.moviesapplication.data.Movie
 @Composable
 fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,
                       selectedItem: Int, onItemSelected: (Int) -> Unit) {
+
+
     var showShareDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -85,9 +88,6 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(138.dp))
-//                    Icon(
-//                        imageVector = Icons.Default.Hear
-//                    )
                 }
 
                 Column(
@@ -100,7 +100,8 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,
                             text = movie.title,
                             style = MaterialTheme.typography.headlineMedium.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = Color.White,
+                                fontFamily = FontFamily.Serif
                             ),
                             textAlign = TextAlign.Center
                         )
@@ -177,7 +178,11 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,
                     ) {
                         Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play", tint = Color.White)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Play", style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold), color = Color.White)
+                        Text("Play", style = MaterialTheme.typography.bodyLarge
+                            .copy(fontWeight = FontWeight.Bold), color = Color.White,
+                            fontFamily = FontFamily.Serif
+
+                        )
                     }
                     Spacer(modifier = Modifier.width(10.dp))
 
@@ -243,7 +248,9 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = movie.rating ?.take(3) ?: "Unknown",
-                            style = MaterialTheme.typography.titleLarge.copy(color = Color(0xFFFF9800))
+                            style = MaterialTheme.typography.titleLarge.copy(color = Color(0xFFFF9800)),
+                            fontFamily = FontFamily.Serif,
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
