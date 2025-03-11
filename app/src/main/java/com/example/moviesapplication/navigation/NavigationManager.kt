@@ -9,6 +9,21 @@ class NavigationManager(private val navController: NavHostController) {
             launchSingleTop = true
         }
     }
+    //member navigation
+    fun navigateToMember(){}
+
+    //member notification
+    fun navigateToNotifications(){}
+
+    //navigate to language
+    fun navigateToLanguage(){}
+    fun navigateToCountry(){}
+    fun navigateToClearCache(){}
+    fun navigateToEditProfile(){}
+    fun navigateToLegal(){}
+    fun navigateToHelp(){}
+    fun navigateToAboutUs(){}
+
 
     //Navigate to Payment
     fun navigateToPayment(){

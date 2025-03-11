@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -100,14 +101,15 @@ fun PaymentScreen(viewModel: PaymentViewModel, navigationManager: NavigationMana
         if (selectedMethod == "M-Pesa"){
             PaymentInputField("Enter Phone Number", phoneNumber) { phoneNumber = it }
             PaymentInputField("Pay Amount", payAmount) { payAmount = it }
-
         }
 
         Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = { viewModel.processPayment(selectedMethod, cardNumber, expiryDate, cvv) },
             shape = RoundedCornerShape(8.dp),
-            modifier = Modifier.fillMaxWidth()
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF217FAB)),
+            modifier = Modifier
+                .fillMaxWidth()
         ) {
             Text("Purchase Now", fontSize = 18.sp, color = Color.White)
         }
@@ -120,7 +122,7 @@ fun PaymentOption(name: String, selected: String, onClick: () -> Unit) {
         modifier = Modifier
             .padding(8.dp)
             .clickable { onClick() },
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors((Color(0xFF8C62D0)))
     ) {
         Text(name, modifier = Modifier.padding(16.dp), fontSize = 16.sp, color = Color.White)
