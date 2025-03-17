@@ -36,6 +36,7 @@ android {
 
         buildConfigField("String", "API_KEY", "\"${secretsProperties.getProperty("API_KEY") ?: ""}\"")
         buildConfigField("String", "BASE_URL", "\"${secretsProperties.getProperty("BASE_URL") ?: ""}\"")
+
     }
 
     buildTypes {
@@ -102,8 +103,14 @@ dependencies {
 
     implementation(libs.firebase.database)
     implementation ("com.google.firebase:firebase-auth-ktx:22.3.1")
-    implementation (libs.play.services.auth)
+    implementation(libs.play.services.auth)
     implementation(libs.androidx.appcompat)
+
+
+    implementation("com.androidstudy.daraja:daraja:2.0.2")
+
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -111,4 +118,9 @@ dependencies {
 
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
+
+
+
+
+
 }

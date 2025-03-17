@@ -11,7 +11,6 @@ import com.example.moviesapplication.data.Movie
 import com.example.moviesapplication.data.Trailer
 import com.example.moviesapplication.interfaces.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
-
 import kotlinx.coroutines.launch
 
 class MovieViewModel : ViewModel() {

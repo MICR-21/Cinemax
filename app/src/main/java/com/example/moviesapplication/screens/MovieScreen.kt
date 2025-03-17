@@ -237,7 +237,7 @@ fun MovieDetailScreen(movie: Movie, navigationManager: NavigationManager,
                             .fillMaxWidth(0.25f)
                             .height(40.dp),
                         shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00E5FF))
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F1D2B))
                     ) {
                         Icon(
                             imageVector = Icons.Default.Star,

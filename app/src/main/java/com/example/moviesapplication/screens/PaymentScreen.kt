@@ -25,10 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
-
+import com.example.moviesapplication.ViewModel.PaymentViewModel
 
 @Composable
 fun PaymentScreen(viewModel: PaymentViewModel, navigationManager: NavigationManager) {
@@ -37,11 +34,12 @@ fun PaymentScreen(viewModel: PaymentViewModel, navigationManager: NavigationMana
     var cardNumber by remember { mutableStateOf("") }
     var expiryDate by remember { mutableStateOf("") }
     var cvv by remember { mutableStateOf("") }
-    var selectedMethod by remember { mutableStateOf("")  }
+//    var selectedMethod by remember { mutableStateOf("Card")  }
 
     //Mpesa
     var phoneNumber by remember { mutableStateOf("") }
     var payAmount by remember { mutableStateOf("") }
+    var selectedMethod by remember { mutableStateOf("M-Pesa") }
 
     //Paypal
 
@@ -91,12 +89,12 @@ fun PaymentScreen(viewModel: PaymentViewModel, navigationManager: NavigationMana
         Spacer(modifier = Modifier.height(16.dp))
 
         // Card
-        if (selectedMethod == "Card") {
-            PaymentInputField("Card Number", cardNumber) { cardNumber = it }
-            PaymentInputField("Expiry Date (MM/YY)", expiryDate) { expiryDate = it }
-            PaymentInputField("CVV", cvv) { cvv = it }
-            PaymentInputField("Pay Amount", payAmount) { payAmount = it }
-        }
+//        if (selectedMethod == "Card") {
+//            PaymentInputField("Card Number", cardNumber) { cardNumber = it }
+//            PaymentInputField("Expiry Date (MM/YY)", expiryDate) { expiryDate = it }
+//            PaymentInputField("CVV", cvv) { cvv = it }
+//            PaymentInputField("Pay Amount", payAmount) { payAmount = it }
+//        }
         //M-Pesa
         if (selectedMethod == "M-Pesa"){
             PaymentInputField("Enter Phone Number", phoneNumber) { phoneNumber = it }
@@ -105,7 +103,14 @@ fun PaymentScreen(viewModel: PaymentViewModel, navigationManager: NavigationMana
 
         Spacer(modifier = Modifier.height(24.dp))
         Button(
-            onClick = { viewModel.processPayment(selectedMethod, cardNumber, expiryDate, cvv) },
+            onClick = {
+                if(selectedMethod == "M-Pesa") {
+                    viewModel.fetchMpesaToken { accessToken ->
+                        println("Access Token: $accessToken")
+                        viewModel.processMpesaPayment(phoneNumber, payAmount)
+                }
+                }
+            },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF217FAB)),
             modifier = Modifier
@@ -146,10 +151,3 @@ fun PaymentInputField(label: String, value: String, onValueChange: (String) -> U
     Spacer(modifier = Modifier.height(8.dp))
 }
 
-class PaymentViewModel : ViewModel() {
-    fun processPayment(method: String, cardNumber: String, expiryDate: String, cvv: String) {
-        viewModelScope.launch {
-            // Simulate payment processing
-        }
-    }
-}
